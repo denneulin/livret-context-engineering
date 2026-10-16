@@ -1,0 +1,2236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cahier · Context Engineering, skills &amp; workflows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+:root {
+  --bg: #fffaf3;
+  --fg: #26233a;
+  --fg-doux: #575279;
+  --discret: #6e6a8a;
+  --titre-fort: #b4637a;
+  --titre: #a8566f;
+  --sous-titre: #a8566f;
+  --accent: #ea9d34;
+  --accent-texte: #95590c;
+  --lien: #286983;
+  --code-fond: #f2e9e1;
+  --encart-fond: #f4ede8;
+  --trait: #e4dfdc;
+  --ligne: #cfc9c6;
+  --bouton-fond: #fffaf3;
+  --bouton-bord: #dcd3ca;
+  --ombre: rgba(38, 35, 58, 0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #232136; --fg: #e0def4; --fg-doux: #bcb8d8; --discret: #908caa;
+    --titre-fort: #ea9a97; --titre: #ea9a97; --sous-titre: #f6c177;
+    --accent: #f6c177; --accent-texte: #f6c177; --lien: #9ccfd8;
+    --code-fond: #2a273f; --encart-fond: #2a283e; --trait: #393552; --ligne: #44415a;
+    --bouton-fond: #232136; --bouton-bord: #44415a; --ombre: rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #232136; --fg: #e0def4; --fg-doux: #bcb8d8; --discret: #908caa;
+  --titre-fort: #ea9a97; --titre: #ea9a97; --sous-titre: #f6c177;
+  --accent: #f6c177; --accent-texte: #f6c177; --lien: #9ccfd8;
+  --code-fond: #2a273f; --encart-fond: #2a283e; --trait: #393552; --ligne: #44415a;
+  --bouton-fond: #232136; --bouton-bord: #44415a; --ombre: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: no-preference) { :root { scroll-behavior: smooth; } }
+
+body { margin: 0; background: var(--bg); color: var(--fg); }
+
+.page {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px; line-height: 1.62;
+  font-feature-settings: "cv05" 1, "cv08" 1;
+  max-width: 68rem; margin: 0 auto;
+  padding-inline: 16px; padding-block: 2.5rem 6rem;
+  display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 3rem;
+}
+.livret { min-width: 0; width: 100%; max-width: 46rem; margin-inline: auto; }
+.toc { display: none; }
+@media (min-width: 1120px) {
+  .page { grid-template-columns: 15rem minmax(0, 46rem); justify-content: center; padding-inline: 2rem; }
+  .livret { margin-inline: 0; }
+  .toc {
+    display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1.5rem);
+    align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto;
+    overscroll-behavior: contain; padding: 0 0.75rem 1rem 0; border-right: 1px solid var(--trait);
+  }
+}
+
+/* Sommaire latéral */
+.toc { font-size: 0.86rem; line-height: 1.4; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc a { display: block; padding: 0.24rem 0.6rem; color: var(--fg-doux); text-decoration: none;
+  border-left: 2px solid transparent; border-radius: 0 5px 5px 0; }
+.toc a:hover { color: var(--fg); background: var(--encart-fond); }
+.toc-titre { margin: 0 0 1rem; font-weight: 700; line-height: 1.3; }
+.toc-titre a { color: var(--titre-fort); padding-left: 0.6rem; }
+.toc-pdf { margin: -0.4rem 0 0.3rem; padding-left: 0.6rem; color: var(--fg-doux); }
+.toc-pdf a { display: inline; padding: 0; border: 0; color: var(--lien); font-weight: 500; }
+.toc-retour { margin: 0 0 1rem; }
+.toc-retour a { color: var(--lien); font-weight: 500; }
+.toc-groupe { margin: 1.25rem 0 0.35rem; padding-left: 0.6rem; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-texte); }
+.toc .partie > a { font-weight: 600; color: var(--fg); }
+.toc .partie > ol { display: none; margin: 0.1rem 0 0.45rem 0.7rem; }
+.toc .partie > ol a { font-size: 0.83rem; }
+.toc .partie.ouverte > ol { display: block; }
+.toc a[aria-current="true"] { color: var(--titre); border-left-color: var(--accent); background: var(--encart-fond); }
+
+/* Texte */
+.livret h1, .livret h2, .livret h3 { scroll-margin-top: 1.25rem; text-wrap: balance; }
+.livret h1 { font-size: clamp(1.6rem, 1.25rem + 1.3vw, 2.1rem); font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.015em; color: var(--titre-fort); margin: 0 0 1.4rem; padding-bottom: 0.65rem;
+  border-bottom: 3px solid var(--accent); }
+.livret h2 { font-size: 1.38rem; font-weight: 700; line-height: 1.3; color: var(--titre); margin: 2.8rem 0 0.8rem; }
+.livret h3 { font-size: 1.1rem; font-weight: 600; line-height: 1.35; color: var(--sous-titre); margin: 2rem 0 0.6rem; }
+.livret p { margin: 0 0 1rem; }
+.livret section > p, .livret section > ul, .livret section > ol, .livret section > blockquote { max-width: 39rem; }
+.livret strong { font-weight: 600; }
+.livret em { color: var(--fg-doux); }
+.livret a { color: var(--lien); text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em; overflow-wrap: anywhere; }
+.livret a:hover { text-decoration-thickness: 2px; }
+.livret ul, .livret ol { margin: 0 0 1.1rem; padding-left: 1.4rem; }
+.livret li { margin: 0.32rem 0; }
+.livret ul > li::marker { color: var(--accent); }
+.livret ol > li::marker { color: var(--accent-texte); font-weight: 600; }
+.livret blockquote { margin: 1.2rem 0 1.5rem; padding: 0.85rem 1.1rem; border-left: 3px solid var(--accent);
+  background: var(--encart-fond); border-radius: 0 8px 8px 0; }
+.livret blockquote p:last-child { margin-bottom: 0; }
+.livret code { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 0.85em; background: var(--code-fond); padding: 0.1em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+
+/* Parties */
+section.partie { margin-top: 5.5rem; }
+
+/* Couverture */
+section.garde .sur-titre { margin: 0 0 0.7rem; color: var(--accent-texte); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; }
+section.garde h1 { font-size: clamp(2.05rem, 1.4rem + 2.8vw, 3rem); line-height: 1.08; letter-spacing: -0.028em;
+  border-bottom: none; padding: 0; margin: 0 0 0.7rem; scroll-margin-top: 5rem; }
+section.garde .accroche { font-size: 1.25rem; font-weight: 500; color: var(--fg-doux); margin: 0 0 1.6rem;
+  padding-bottom: 1.4rem; border-bottom: 3px solid var(--accent); max-width: none; }
+section.garde > p { margin-bottom: 0.3rem; }
+section.garde > p.note-version { font-size: 0.86rem; color: var(--discret); margin-top: 1rem; }
+.note-web { margin: 1.4rem 0 0; padding: 0.85rem 1.1rem; font-size: 0.9rem; color: var(--fg-doux);
+  background: var(--encart-fond); border-radius: 8px; max-width: 39rem; }
+.note-web strong { color: var(--fg); }
+.retrait { margin: 0 0 2.2rem; padding: 0.75rem 1.1rem; font-size: 0.92rem; color: var(--fg);
+  background: var(--encart-fond); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
+.retrait a { font-weight: 600; }
+
+/* Code */
+.code { margin: 1rem 0 1.5rem; background: var(--code-fond); border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0; min-width: 0; }
+.code-tete { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.4rem 0.5rem 0 1.1rem; }
+.code-langue { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--discret); }
+.copier { font: inherit; font-size: 0.78rem; font-weight: 500; line-height: 1.3; color: var(--fg-doux);
+  background: var(--bouton-fond); border: 1px solid var(--bouton-bord); border-radius: 6px;
+  padding: 0.22rem 0.65rem; cursor: pointer; white-space: nowrap; }
+.copier:hover, .copier:focus-visible { color: var(--fg); border-color: var(--accent); }
+.copier.fait { color: var(--fg); border-color: var(--accent); }
+.code pre { margin: 0; padding: 0.35rem 1.1rem 1rem; font-size: 0.84rem; line-height: 1.58;
+  overflow-x: auto; tab-size: 2; }
+.code pre code { background: none; padding: 0; border-radius: 0; font-size: inherit; overflow-wrap: normal; }
+.code pre:has(> code.language-text), .code pre:has(> code.language-markdown) { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Tableaux */
+.tableau { overflow-x: auto; margin: 1rem 0 1.6rem; }
+.livret table { width: 100%; border-collapse: collapse; font-size: 0.9rem; line-height: 1.5;
+  font-variant-numeric: tabular-nums; }
+.livret th { text-align: left; font-weight: 600; color: var(--titre); border-bottom: 2px solid var(--accent);
+  padding: 0.45rem 0.7rem; vertical-align: bottom; }
+.livret td { border-bottom: 1px solid var(--trait); padding: 0.5rem 0.7rem; vertical-align: top; }
+.livret td code { font-size: 0.82em; }
+@media (max-width: 700px) {
+  .tableau.c3 table { min-width: 32rem; }
+  .tableau.c4 table, .tableau.c5 table { min-width: 42rem; }
+}
+/* Cellules à remplir, dans le fichier Markdown du cahier : à l'écran, une ligne d'écriture. */
+td.ecrire { border-left: 1px solid var(--trait); min-width: 5rem; height: 2.6rem;
+  background-image: linear-gradient(var(--ligne), var(--ligne));
+  background-repeat: no-repeat; background-size: calc(100% - 1.4rem) 1px;
+  background-position: 0.7rem calc(100% - 0.55rem); }
+td.insecable { white-space: nowrap; }
+td.insecable code { overflow-wrap: normal; }
+table.fiche td:last-child { width: 60%; }
+table.deux-zones td { width: 50%; }
+td.coche { width: 3rem; text-align: center; vertical-align: middle; }
+
+/* Cases à cocher */
+.case { display: inline-block; width: 0.95rem; height: 0.95rem; border: 1.5px solid var(--discret);
+  border-radius: 3px; vertical-align: -0.12em; box-sizing: border-box; }
+.case.coche { background: var(--accent); border-color: var(--accent); }
+ul.taches { list-style: none; padding-left: 1.7rem; }
+li.tache { margin: 0.45rem 0; position: relative; }
+li.tache > .case { position: absolute; left: -1.7rem; top: 0.33rem; }
+
+/* Pied de page et retour au sommaire */
+.pied { margin-top: 4.5rem; padding-top: 1.2rem; border-top: 1px solid var(--trait); font-size: 0.82rem;
+  color: var(--discret); }
+.vers-sommaire { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  font-size: 0.82rem; font-weight: 600; color: var(--fg); background: var(--bouton-fond);
+  border: 1px solid var(--bouton-bord); border-radius: 999px; padding: 0.45rem 0.9rem;
+  text-decoration: none; box-shadow: 0 4px 14px var(--ombre); }
+@media (min-width: 1120px) { .vers-sommaire { display: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+<nav class="toc" aria-label="Sommaire du cahier">
+<p class="toc-titre"><a href="#couverture">Context Engineering, skills &amp; workflows</a></p>
+<p class="toc-pdf">Cahier : <a href="cahier.md" download="cahier-context-engineering.md">Markdown</a> · <a href="cahier.pdf" download="cahier-context-engineering.pdf">PDF</a></p>
+<p class="toc-retour"><a href="./">← La page du livret</a></p>
+<ol>
+<li class="avant"><a href="#mode-d-emploi">Mode d'emploi</a></li>
+<li class="avant"><a href="#sommaire">Sommaire</a></li>
+<li class="toc-groupe">Jour 1 · jeudi 15 octobre</li>
+<li class="partie"><a href="#j1-matin-cahier">Matin</a><ol>
+<li><a href="#exercice-premier-contact-avec-votre-repo-10-min">Exercice : premier contact avec votre repo (10 min)</a></li>
+<li><a href="#exercice-express-reecrire-un-prompt-4-min">Exercice express : réécrire un prompt (4 min)</a></li>
+<li><a href="#atelier-1-auditer-et-ameliorer-votre-claude-md-45-min-en-binome">Atelier 1 : auditer et améliorer votre CLAUDE.md (45 min, en binôme)</a></li>
+</ol></li>
+<li class="partie"><a href="#j1-apres-midi-cahier">Après-midi</a><ol>
+<li><a href="#exercice-proteger-votre-env-30-min">Exercice : protéger votre <code>.env</code> (30 min)</a></li>
+<li><a href="#exercice-creer-votre-skill-65-min">Exercice : créer votre skill (65 min)</a></li>
+<li><a href="#le-ticket-fil-rouge">Le ticket fil rouge</a></li>
+</ol></li>
+<li class="toc-groupe">Jour 2 · vendredi 16 octobre</li>
+<li class="partie"><a href="#j2-matin-cahier">Matin</a><ol>
+<li><a href="#votre-projet-ou-tailspin-toys">Votre projet, ou Tailspin Toys</a></li>
+<li><a href="#exercice-faites-vous-presenter-le-projet-7-min">Exercice : faites-vous présenter le projet (7 min)</a></li>
+<li><a href="#votre-ticket-du-jour-5-min">Votre ticket du jour (5 min)</a></li>
+<li><a href="#atelier-2-de-votre-ticket-a-une-spec-et-des-tickets-58-min-seul">Atelier 2 : de votre ticket à une spec et des tickets (58 min, seul)</a></li>
+<li><a href="#exercice-goal-a-blanc-4-min">Exercice : « <code>/goal</code> à blanc » (4 min)</a></li>
+<li><a href="#exercice-la-condition-d-arret-de-votre-ticket-11-min">Exercice : la condition d'arrêt de votre ticket (11 min)</a></li>
+</ol></li>
+<li class="partie"><a href="#j2-apres-midi-cahier">Après-midi</a><ol>
+<li><a href="#exercice-preparez-vos-worktrees-5-min">Exercice : préparez vos worktrees (5 min)</a></li>
+<li><a href="#atelier-3-vos-tickets-en-parallele-84-min-pause-comprise-seul">Atelier 3 : vos tickets, en parallèle (84 min, pause comprise, seul)</a></li>
+<li><a href="#la-grille-des-tentations">La grille des tentations</a></li>
+<li><a href="#exercice-un-serveur-mcp-et-le-sous-agent-qui-s-en-sert-45-min">Exercice : un serveur MCP, et le sous-agent qui s'en sert (45 min)</a></li>
+</ol></li>
+<li class="toc-groupe">En clôture du J2</li>
+<li class="partie"><a href="#plan-d-adoption-a-30-jours">Plan d'adoption à 30 jours</a><ol>
+<li><a href="#ligne-1-fin-du-j1-matin-le-contexte">Ligne 1 · fin du J1 matin : le contexte</a></li>
+<li><a href="#ligne-2-fin-du-j1-apres-midi-hooks-et-skills">Ligne 2 · fin du J1 après-midi : hooks et skills</a></li>
+<li><a href="#ligne-3-fin-du-j2-matin-composer-et-piloter">Ligne 3 · fin du J2 matin : composer et piloter</a></li>
+<li><a href="#ligne-4-fin-du-j2-apres-midi-paralleliser">Ligne 4 · fin du J2 après-midi : paralléliser</a></li>
+<li><a href="#consolidation-en-cloture-du-j2">Consolidation · en clôture du J2</a></li>
+</ol></li>
+<li class="partie"><a href="#checklist-context-engineering">Checklist context engineering</a><ol>
+<li><a href="#partie-j1-le-contexte-le-claude-md-les-hooks-et-les-skills">Partie J1 : le contexte, le CLAUDE.md, les hooks et les skills</a></li>
+<li><a href="#partie-j2-workflows-loops-parallelisation">Partie J2 : workflows, loops, parallélisation</a></li>
+</ol></li>
+<li class="partie"><a href="#auto-evaluation-les-6-objectifs">Auto-évaluation : les 6 objectifs</a><ol>
+</ol></li>
+</ol>
+</nav>
+<main class="livret">
+<p class="retrait"><strong>En ligne jusqu'au vendredi 23 octobre 2026.</strong> Téléchargez le cahier : <a href="cahier.md" download="cahier-context-engineering.md">Markdown</a>, <a href="cahier.html" download="cahier-context-engineering.html">HTML</a>, <a href="cahier.pdf" download="cahier-context-engineering.pdf">PDF</a>.</p>
+<section class="garde">
+<p class="sur-titre">Cahier · Jours 1 et 2</p>
+<h1 id="couverture">Context Engineering, skills &amp; workflows</h1>
+<p class="accroche">Du prompt improvisé au harness maîtrisé</p>
+<p>5 Degrés · jeudi 15 et vendredi 16 octobre 2026 · en présentiel</p>
+<p>Animateur : Anthony Denneulin</p>
+<p class="note-version">Version de référence : Claude Code 2.1.296 (9 octobre 2026). L'outil change chaque semaine : en cas de doute, la documentation officielle fait foi.</p>
+<p class="note-web"><strong>Le cahier, à lire et à copier.</strong> Chaque bloc de code a un bouton Copier ; une condition <code>/goal</code> se copie sur une seule ligne. Vos réponses s'écrivent dans le fichier Markdown du cahier, sur votre poste et hors de votre repo : cette page ne garde rien.</p>
+<h2 id="mode-d-emploi">Mode d'emploi</h2>
+<ol>
+<li>Le livret a deux parties : ce cahier, qui sert pendant la formation, et le récap, à relire après, publié le vendredi 16 octobre à 16h30. Les deux sont sur la page du livret jusqu'au 23 octobre : <a href="https://denneulin.github.io/livret-context-engineering/" target="_blank" rel="noopener">denneulin.github.io/livret-context-engineering</a>.</li>
+<li>Enregistrez le fichier Markdown du cahier hors de votre repo (le dossier Téléchargements suffit) et remplissez-le dans votre éditeur : chaque « … » est une case à remplir. Dans votre repo, Claude le lirait comme le reste du code, et un <code>git add -A</code> l'embarquerait.</li>
+<li>Le cahier ne s'ouvre qu'aux exercices, aux ateliers et en fin de demi-journée : pendant la théorie, il n'y a rien à suivre.</li>
+<li>Les fichiers d'exercice (hooks, réglages, modèle de skill) et les commandes et prompts du J2 (installation, présentation du projet, chaîne de skills, conditions <code>/goal</code>, pipeline, analyse parallèle, serveur MCP) sont reproduits en entier : copiez-les plutôt que de les retaper.</li>
+<li>Le soir du J1, vous choisissez votre ticket fil rouge (fiche à la fin du cahier du J1 après-midi) : un ticket de votre projet, ou, sans projet sous la main, un ticket de Tailspin Toys, le projet d'entraînement du J2, choisi sur place. Il traverse tout le J2 : la spec, les tickets et une première loop le matin, l'exécution en parallèle l'après-midi.</li>
+<li>Le plan d'adoption à 30 jours se construit ligne par ligne, une ligne à la fin de chaque demi-journée ; vous le consolidez en clôture du J2, en un plan de quatre semaines.</li>
+<li>Les listes à cocher des exercices aident à relire votre travail : les cocher est facultatif. La checklist context engineering, elle, se coche dans les semaines qui suivent.</li>
+</ol>
+
+
+<h2 id="sommaire">Sommaire</h2>
+<div class="tableau c2"><table>
+<thead>
+<tr>
+<th>Partie</th>
+<th>Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#j1-matin-cahier">J1 matin — Cahier</a></td>
+<td>Premier contact, réécrire un prompt, Atelier 1</td>
+</tr>
+<tr>
+<td><a href="#j1-apres-midi-cahier">J1 après-midi — Cahier</a></td>
+<td>Exercice <code>.env</code>, exercice skill, ticket fil rouge</td>
+</tr>
+<tr>
+<td><a href="#j2-matin-cahier">J2 matin — Cahier</a></td>
+<td>Votre projet ou Tailspin Toys, le projet présenté par Claude, votre ticket du jour, Atelier 2 en quatre étapes et son plan de composition, « <code>/goal</code> à blanc », la condition d'arrêt</td>
+</tr>
+<tr>
+<td><a href="#j2-apres-midi-cahier">J2 après-midi — Cahier</a></td>
+<td>La préparation des worktrees, Atelier 3 en cinq étapes et ses deux prompts, grille des tentations, serveur MCP</td>
+</tr>
+<tr>
+<td><a href="#plan-d-adoption-a-30-jours">Plan d'adoption à 30 jours</a></td>
+<td>Une ligne par demi-journée, puis la consolidation en quatre semaines</td>
+</tr>
+<tr>
+<td><a href="#checklist-context-engineering">Checklist context engineering</a></td>
+<td>35 pratiques à adopter : 15 du J1, 20 du J2</td>
+</tr>
+<tr>
+<td><a href="#auto-evaluation-les-6-objectifs">Auto-évaluation</a></td>
+<td>Les 6 objectifs du programme, de 1 à 4</td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section class="partie">
+<h1 id="j1-matin-cahier">J1 matin — Cahier</h1>
+<h2 id="exercice-premier-contact-avec-votre-repo-10-min">Exercice : premier contact avec votre repo (10 min)</h2>
+<ol>
+<li>Ouvrez un terminal à la racine de votre repo et lancez <code>claude</code>.</li>
+<li>Passez en Plan mode (Shift+Tab).</li>
+<li>Demandez :</li>
+</ol>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">Explique l'architecture de ce projet et liste les commandes pour builder, tester et linter.
+</code></pre></div>
+<ol start="4">
+<li>Notez ce qui est juste, faux ou manquant : ce sera votre matière pour l'Atelier 1.</li>
+<li>Dans la même session, tapez <code>/context</code> : qu'est-ce qui prend le plus de place ?</li>
+</ol>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Vos notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repo et stack</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Ce que Claude a dit de l'architecture</td>
+<td class="ecrire l3"></td>
+</tr>
+<tr>
+<td>Les commandes qu'il a trouvées (build, test, lint)</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Ce qui est juste</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Ce qui est faux</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Ce qui manque</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td><code>/context</code> : ce qui prend le plus de place</td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Si ça coince : Claude Code n'est pas installé ou pas connecté → travaillez sur le poste de votre binôme. Repo très gros → lancez <code>claude</code> dans un sous-dossier. Projet .NET : si Claude ne trouve pas les commandes, ce sont souvent <code>dotnet build</code> et <code>dotnet test</code>.</p>
+<h2 id="exercice-express-reecrire-un-prompt-4-min">Exercice express : réécrire un prompt (4 min)</h2>
+<p>Prenez un prompt flou que vous avez tapé cette semaine, ou celui-ci : « Optimise la page de recherche. » Réécrivez-le avec les quatre verbes.</p>
+<div class="tableau c2"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>Avant : le prompt flou</th>
+<th>Après : avec les quatre verbes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l3"></td>
+<td class="ecrire l3"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Vérifiez votre version « après » :</p>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Elle référence un fichier ou un symbole (<code>@chemin</code>).</li>
+<li class="tache"><span class="case"></span>Elle montre un modèle à suivre.</li>
+<li class="tache"><span class="case"></span>Elle contraint : ce qu'il ne faut pas toucher, et un critère de vérification.</li>
+<li class="tache"><span class="case"></span>Elle structure : un plan d'abord, des étapes ou un format de sortie.</li>
+</ul>
+<h2 id="atelier-1-auditer-et-ameliorer-votre-claude-md-45-min-en-binome">Atelier 1 : auditer et améliorer votre CLAUDE.md (45 min, en binôme)</h2>
+<div class="tableau c3"><table class="bloc">
+<thead>
+<tr>
+<th>Phase</th>
+<th>Durée</th>
+<th>Ce que vous faites</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Passer au crible</td>
+<td class="insecable">12 min</td>
+<td>Ni CLAUDE.md ni AGENTS.md ? <code>/init</code> d'abord (un AGENTS.md seul se passe au crible tel quel : créer un CLAUDE.md le ferait ignorer). Pour chaque ligne : « si je la retire, Claude fera-t-il une erreur ? » Si non, coupez. Ajoutez ce que Claude a raté au premier contact.</td>
+</tr>
+<tr>
+<td>2. Relecture croisée</td>
+<td class="insecable">10 min</td>
+<td>Votre binôme relit votre CLAUDE.md avec la grille ci-dessous, et vous le sien.</td>
+</tr>
+<tr>
+<td>3. Améliorer et extraire une règle</td>
+<td class="insecable">15 min</td>
+<td>Appliquez au moins l'amélioration proposée par votre binôme, par exemple une règle rigide reformulée en principe. Extrayez une règle <code>.claude/rules/</code> avec <code>paths</code>, puis vérifiez qu'elle se charge.</td>
+</tr>
+<tr>
+<td>4. Contre-vérifier</td>
+<td class="insecable">8 min</td>
+<td>Lancez <code>/doctor prompt-audit</code> : qu'a-t-il trouvé que vous aviez raté ? Qu'est-ce que vous refusez dans ses propositions ?</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Livrable</strong> : votre CLAUDE.md et au moins une règle, commités.</p>
+<p><strong>Restitution</strong> (2 minutes par binôme) : la section la plus utile de votre CLAUDE.md ; ce que l'audit a révélé par rapport à votre propre passe ; la règle que vous avez extraite.</p>
+<p>Si ça coince : la conversation en cours garde l'ancienne version du CLAUDE.md → <code>/clear</code> pour tester la nouvelle. Règle qui ne se charge pas → vérifiez le glob (relatif à la racine du repo), faites lire à Claude un fichier qui correspond, et guettez la ligne « Loaded .claude/rules/… » dans le terminal. <code>/doctor prompt-audit</code> refuse de se lancer → vérifiez <code>claude --version</code> (2.1.283 ou plus) ; sinon, la passe manuelle était l'exercice.</p>
+<h3 id="grille-de-relecture-le-claude-md-de-votre-binome">Grille de relecture : le CLAUDE.md de votre binôme</h3>
+<div class="tableau c3"><table class="a-remplir">
+<thead>
+<tr>
+<th>Critère</th>
+<th>Note</th>
+<th>La question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spécificité</td>
+<td class="insecable">1 · 2 · 3</td>
+<td>Des commandes exactes ? Un nouveau pourrait-il s'en servir ?</td>
+</tr>
+<tr>
+<td>Bruit</td>
+<td class="insecable">1 · 2 · 3</td>
+<td>Chaque section apporte-t-elle quelque chose que le code ne dit pas ?</td>
+</tr>
+<tr>
+<td>Boundaries</td>
+<td class="insecable">oui · non</td>
+<td>Les zones interdites sont-elles listées ?</td>
+</tr>
+<tr>
+<td>Taille</td>
+<td>… lignes</td>
+<td>Moins de 200 lignes ?</td>
+</tr>
+</tbody>
+</table></div>
+<p>Chaque relecteur donne un point fort et une amélioration concrète.</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Retour</th>
+<th>Vos notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Un point fort</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Une amélioration concrète</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="checklist-du-livrable">Checklist du livrable</h3>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Le CLAUDE.md fait moins de 200 lignes.</li>
+<li class="tache"><span class="case"></span>Il donne les commandes exactes pour builder, tester et linter.</li>
+<li class="tache"><span class="case"></span>Il signale les pièges et l'environnement (variables, services, options non évidentes), sans décrire le code fichier par fichier.</li>
+<li class="tache"><span class="case"></span>Il désigne un fichier modèle (golden file) au lieu d'énumérer des règles de style.</li>
+<li class="tache"><span class="case"></span>Il liste les zones interdites (Boundaries).</li>
+<li class="tache"><span class="case"></span>Les erreurs relevées au premier contact sont corrigées.</li>
+<li class="tache"><span class="case"></span>Au moins une règle <code>.claude/rules/*.md</code> avec <code>paths</code>, et vous avez vérifié qu'elle se charge.</li>
+<li class="tache"><span class="case"></span>Le CLAUDE.md et la règle sont commités.</li>
+</ul>
+</section>
+<section class="partie">
+<h1 id="j1-apres-midi-cahier">J1 après-midi — Cahier</h1>
+<h2 id="exercice-proteger-votre-env-30-min">Exercice : protéger votre <code>.env</code> (30 min)</h2>
+<p>Objectif : qu'aucun secret de votre projet n'entre dans la conversation. Vous superposez deux protections, une règle <code>deny</code> puis un hook, et vous cherchez ce qui passe encore.</p>
+<p><strong>Avant de commencer.</strong> Vous allez essayer de faire lire votre <code>.env</code> par Claude ; si un essai réussit, son contenu part dans la conversation. Travaillez donc avec un faux secret : déplacez votre vrai <code>.env</code> hors du repo le temps de l'exercice et créez un <code>.env</code> de test contenant <code>FAKE_SECRET=abc123</code>, ignoré par git. Remettez le vrai à la fin. Projet .NET : même précaution pour <code>appsettings.Development.json</code> si vous voulez tester ce fichier. Vérifiez aussi que Node.js répond : <code>node --version</code>.</p>
+<p>Où mettre les fichiers :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">mon-projet/
+├── .claude/
+│   ├── settings.json         ← la règle deny et le hook
+│   └── hooks/
+│       └── protect-env.mjs   ← le script
+└── .env                      ← le faux secret de test
+</code></pre></div>
+<p>Si votre projet a déjà un <code>.claude/settings.json</code>, ne l'écrasez pas : ajoutez-y les clés <code>permissions.deny</code> et <code>hooks</code>.</p>
+<h3 id="etape-1-la-regle-deny-5-min">Étape 1 : la règle <code>deny</code> (5 min)</h3>
+<p>Dans <code>.claude/settings.json</code> :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">JSON</span><button type="button" class="copier">Copier</button></div><pre><code class="language-json">{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;Read(**/.env)&quot;,
+      &quot;Edit(**/.env)&quot;
+    ]
+  }
+}
+</code></pre></div>
+<p>Relancez Claude Code, puis demandez « Lis le fichier .env » : la lecture est refusée. Demandez ensuite « Affiche le .env avec cat » : dans la version testée (Claude Code 2.1.296), la règle bloque aussi <code>cat</code>, <code>head</code> ou <code>grep</code> lancés sur le fichier nommé. Essayez alors « Lis le .env avec un petit script node » : si ça passe, vous avez trouvé le trou que le hook va boucher. Autre limite : <code>Read(**/.env)</code> ne vise que les fichiers nommés exactement <code>.env</code>, pas <code>.env.local</code>.</p>
+<h3 id="etape-2-le-hook-pretooluse-15-min">Étape 2 : le hook <code>PreToolUse</code> (15 min)</h3>
+<ol>
+<li>Copiez <code>protect-env.mjs</code> (ci-dessous) dans <code>.claude/hooks/</code>.</li>
+<li>Ajoutez à <code>.claude/settings.json</code> la clé <code>hooks</code> de <code>settings.exemple.json</code> (ci-dessous) : le hook est branché sur Read, Edit, Write, Bash, PowerShell et Grep. PowerShell et Grep pour Windows, où Claude Code peut lancer ses commandes avec l'outil PowerShell au lieu de Bash, et chercher avec l'outil Grep ; sur macOS et Linux, il cherche avec <code>grep</code> par Bash.</li>
+<li>Testez le script seul, sans Claude. Le terminal doit afficher le message de blocage, puis <code>2</code>.</li>
+</ol>
+<p>Bash ou zsh (macOS, Linux, Git Bash) :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">echo '{&quot;tool_input&quot;:{&quot;command&quot;:&quot;cat .env&quot;}}' | node .claude/hooks/protect-env.mjs
+echo $?
+</code></pre></div>
+<p>PowerShell :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">PowerShell</span><button type="button" class="copier">Copier</button></div><pre><code class="language-powershell">'{&quot;tool_input&quot;:{&quot;command&quot;:&quot;cat .env&quot;}}' | node .claude/hooks/protect-env.mjs
+$LASTEXITCODE
+</code></pre></div>
+<ol start="4">
+<li>Relancez Claude Code et testez :</li>
+</ol>
+<div class="tableau c2"><table class="bloc">
+<thead>
+<tr>
+<th>Prompt à taper dans Claude Code</th>
+<th>Résultat attendu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>« Affiche le contenu du .env avec cat »</td>
+<td>Bloqué : Claude reçoit le message « Bloqué par le hook protect-env… »</td>
+</tr>
+<tr>
+<td>« Lis le fichier .env »</td>
+<td>Refusé (règle <code>deny</code> ou hook)</td>
+</tr>
+<tr>
+<td>« Lis le .env.example », si vous en avez un</td>
+<td>Autorisé : fichier d'exemple versionné</td>
+</tr>
+<tr>
+<td>« Lis » suivi d'un fichier de code de votre projet</td>
+<td>Autorisé</td>
+</tr>
+</tbody>
+</table></div>
+<p>Si Claude refuse de lui-même avant que le hook intervienne, tant mieux, mais ce n'est pas une garantie : c'est son jugement, pas une barrière. Le test à la main (point 3) prouve que le hook bloque.</p>
+<p><strong>Projet .NET.</strong> <code>appsettings.Development.json</code>, <code>appsettings.Production.json</code> et <code>secrets.json</code> sont déjà dans la liste du script. Pour ajouter un fichier, complétez la liste <code>AUTRES_SECRETS</code> en minuscules, par exemple <code>"appsettings.staging.json"</code>.</p>
+<h3 id="etape-3-la-chasse-a-la-faille-5-min">Étape 3 : la chasse à la faille (5 min)</h3>
+<p>Essayez de faire lire le faux secret par Claude sans que le hook le voie : une autre commande, un autre chemin, un autre outil. Notez ce qui passe.</p>
+<div class="tableau c3"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>Ce que j'ai essayé</th>
+<th>Bloqué ?</th>
+<th>Pourquoi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Si vous séchez : un joker du shell, un nom de fichier fabriqué au moment de l'exécution, une recherche sur tout le dossier (sur Mac et Linux, avec <code>--no-ignore-files</code> : le grep de Claude Code saute les fichiers ignorés par git), un fichier de secrets qui ne s'appelle pas <code>.env</code>. Côté .NET : un outil qui affiche les secrets utilisateur sans jamais nommer <code>secrets.json</code>.</p>
+<p>Ce que ça montre : le hook lit le texte de la commande, pas ce qu'elle fera. C'est une barrière de plus, pas une garantie. Le sandbox, lui, empêche les commandes shell d'atteindre le fichier, quel que soit leur texte.</p>
+<h3 id="si-ca-coince">Si ça coince</h3>
+<ul>
+<li>Claude Code signale au démarrage que <code>settings.json</code> est invalide : une virgule en trop ou en moins ; faites relire le fichier par votre binôme. Dans le terminal, hors session, <code>claude doctor</code> affiche l'erreur et la clé en cause.</li>
+<li>Le hook ne se déclenche pas : relancez Claude Code, puis tapez <code>/hooks</code> : s'il n'y figure pas, c'est la configuration ; s'il y figure, vérifiez le matcher et le chemin du script. En dernier recours, <code>claude --debug=hooks</code>, et lisez le log dans <code>~/.claude/debug/</code>.</li>
+<li>Claude Code affiche une « hook error » : le script n'a pas pu se lancer ou a planté, et tant que ce message apparaît, il ne bloque rien. Relancez le test à la main (point 3 de l'étape 2) pour voir l'erreur ; sous Windows, voyez aussi le point suivant.</li>
+<li>Sous Windows sans Git Bash, les hooks tournent sous PowerShell : vérifiez que la commande écrit <code>${CLAUDE_PROJECT_DIR}</code> avec ses accolades. Sans accolades, PowerShell ne voit pas la variable et le chemin du script est cassé ; depuis la v2.1.299, un hook PreToolUse qui échoue ainsi peut même bloquer les actions de Claude. Si le hook échoue encore, remplacez le handler par cette forme sans shell, recommandée par la documentation. Pas de chemin relatif (<code>node .claude/hooks/protect-env.mjs</code>) : les hooks tournent dans le dossier courant de Claude, et après un <code>cd</code> le script est introuvable.</li>
+</ul>
+<div class="code"><div class="code-tete"><span class="code-langue">JSON</span><button type="button" class="copier">Copier</button></div><pre><code class="language-json">{
+  &quot;type&quot;: &quot;command&quot;,
+  &quot;command&quot;: &quot;node&quot;,
+  &quot;args&quot;: [&quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/protect-env.mjs&quot;]
+}
+</code></pre></div>
+<ul>
+<li>Node.js absent : travaillez sur le poste de votre binôme.</li>
+<li>Le hook bloque une commande sans danger qui cite un <code>.env</code>, comme <code>cp .env.example .env</code> : lancez-la vous-même dans votre terminal.</li>
+</ul>
+<p>Une fois que tout marche, remettez votre vrai <code>.env</code> en place et commitez <code>.claude/settings.json</code> et <code>.claude/hooks/</code> : toute l'équipe en profite au prochain pull.</p>
+<h3 id="fichier-claude-hooks-protect-env-mjs">Fichier <code>.claude/hooks/protect-env.mjs</code></h3>
+<div class="code"><div class="code-tete"><span class="code-langue">JavaScript</span><button type="button" class="copier">Copier</button></div><pre><code class="language-js">#!/usr/bin/env node
+// protect-env.mjs : hook PreToolUse de Claude Code qui protège les fichiers
+// de secrets. Node.js seul, aucune dépendance (macOS, Linux, Windows).
+//
+// CE QU'IL FAIT
+// Avant chaque appel d'outil, Claude Code envoie sur stdin un JSON qui décrit
+// l'appel (tool_name, tool_input). Le script lit les champs file_path, path,
+// pattern, glob et command de tool_input. S'il y trouve un fichier de secrets,
+// il écrit un message sur stderr et sort avec le code 2 : Claude Code bloque
+// l'appel et transmet le message à Claude. Sinon, code 0 : l'appel continue.
+//
+// Bloqués  : .env et .env.&lt;quelque chose&gt; (.env.local, .env.production...),
+//            appsettings.Development.json, appsettings.Production.json,
+//            secrets.json.
+// Autorisés : les fichiers d'exemple versionnés .env.example, .env.sample
+//            et .env.test.
+// Les chemins Windows (C:\projet\.env) sont reconnus, les majuscules aussi.
+// JSON illisible sur stdin : le script laisse passer (code 0).
+//
+// SES LIMITES
+// Le hook lit le texte de l'appel, pas ce que la commande fera vraiment.
+// Une commande assez tordue passe à travers : nom de fichier fabriqué au
+// moment de l'exécution, programme qui ouvre le fichier lui-même, recherche
+// sur tout un dossier... C'est une barrière de plus, pas une garantie :
+// le sandbox, lui, isole les commandes shell quel que soit leur texte.
+// À l'inverse, il bloque des commandes sans danger qui citent un .env,
+// comme « cp .env.example .env » : faites-les vous-même dans le terminal.
+//
+// LE TESTER À LA MAIN (le code affiché doit valoir 2)
+//   bash :       echo '{&quot;tool_input&quot;:{&quot;command&quot;:&quot;cat .env&quot;}}' \
+//                  | node .claude/hooks/protect-env.mjs ; echo $?
+//   PowerShell : '{&quot;tool_input&quot;:{&quot;command&quot;:&quot;cat .env&quot;}}' |
+//                  node .claude/hooks/protect-env.mjs ; $LASTEXITCODE
+//
+// L'ADAPTER : complétez les deux listes ci-dessous (noms en minuscules).
+
+import process from &quot;node:process&quot;;
+
+// Fichiers d'exemple versionnés : toujours autorisés.
+const EXEMPLES_AUTORISES = [&quot;.env.example&quot;, &quot;.env.sample&quot;, &quot;.env.test&quot;];
+
+// Autres fichiers de secrets (.env et .env.* sont reconnus à part).
+const AUTRES_SECRETS = [
+  &quot;appsettings.development.json&quot;,
+  &quot;appsettings.production.json&quot;,
+  &quot;secrets.json&quot;,
+];
+
+// Champs inspectés : chemin d'un fichier (Read, Edit, Write), dossier et
+// motifs de recherche (Grep), commande (Bash, PowerShell).
+const CHAMPS = [&quot;file_path&quot;, &quot;path&quot;, &quot;pattern&quot;, &quot;glob&quot;, &quot;command&quot;];
+
+// Renvoie le nom du fichier de secrets trouvé dans le texte, ou null.
+function chercherSecret(texte) {
+  // Découpage en noms de fichiers : lettres, chiffres, point, tiret et
+  // souligné restent collés ; tout le reste sépare (espace, / et \,
+  // guillemets, jokers * ?, ; | &amp; = : ...).
+  for (const nom of texte.split(/[^a-z0-9._-]+/i)) {
+    const bas = nom.toLowerCase();
+    if (EXEMPLES_AUTORISES.includes(bas)) continue;
+    // .env seul, ou suivi d'autre chose qu'une lettre ou un chiffre :
+    // .env, .env.local, .env-prod ; mais pas .environment ni .envrc.
+    if (/^\.env(?![a-z0-9])/.test(bas)) return nom;
+    if (AUTRES_SECRETS.includes(bas)) return nom;
+  }
+  return null;
+}
+
+// Lancé à la main sans rien sur stdin : on explique au lieu d'attendre.
+if (process.stdin.isTTY) {
+  console.error(&quot;Usage : echo '&lt;JSON de Claude Code&gt;' | node protect-env.mjs&quot;);
+  process.exit(0);
+}
+
+let brut = &quot;&quot;;
+process.stdin.setEncoding(&quot;utf8&quot;);
+for await (const morceau of process.stdin) brut += morceau;
+
+let appel;
+try {
+  appel = JSON.parse(brut);
+} catch {
+  process.exit(0); // JSON illisible : on laisse passer.
+}
+
+const entree = appel?.tool_input ?? {};
+const secret = CHAMPS.map((champ) =&gt; {
+  const valeur = entree[champ];
+  if (typeof valeur !== &quot;string&quot;) return null;
+  // Dans la regex d'une recherche, « \. » veut dire « un point » :
+  // chercher process\.env dans le code ne lit aucun fichier .env.
+  const texte = champ === &quot;pattern&quot; ? valeur.split(&quot;\\.&quot;).join(&quot;.&quot;) : valeur;
+  return chercherSecret(texte);
+}).find((nom) =&gt; nom !== null);
+
+if (!secret) process.exit(0);
+
+const message = [
+  `Bloqué par le hook protect-env : « ${secret} » est un fichier de secrets.`,
+  &quot;Les secrets ne doivent pas entrer dans la conversation : ne cherchez pas&quot;,
+  &quot;à le lire autrement. Demandez à l'utilisateur la valeur dont vous avez&quot;,
+  &quot;besoin, ou lisez le fichier d'exemple versionné s'il existe&quot;,
+  &quot;(.env.example, appsettings.json).&quot;,
+].join(&quot;\n&quot;);
+
+// Code 2 : Claude Code bloque l'appel et transmet le message à Claude.
+// On sort une fois le message écrit, pour ne pas le couper.
+process.stderr.write(message + &quot;\n&quot;, () =&gt; process.exit(2));
+</code></pre></div>
+<h3 id="fichier-claude-settings-json-settings-exemple-json">Fichier <code>.claude/settings.json</code> (<code>settings.exemple.json</code>)</h3>
+<div class="code"><div class="code-tete"><span class="code-langue">JSON</span><button type="button" class="copier">Copier</button></div><pre><code class="language-json">{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;Read(**/.env)&quot;,
+      &quot;Edit(**/.env)&quot;
+    ]
+  },
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Read|Edit|Write|Bash|PowerShell|Grep&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;node \&quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/protect-env.mjs\&quot;&quot;
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre></div>
+<h3 id="bonus-un-hook-stop-qui-garde-les-tests-verts">Bonus : un hook Stop qui garde les tests verts</h3>
+<p>Le script <code>tests-verts.mjs</code> lance vos tests quand Claude veut s'arrêter. Tests rouges : il renvoie la fin de la sortie à Claude, qui reprend pour corriger.</p>
+<ol>
+<li>Copiez <code>tests-verts.mjs</code> dans <code>.claude/hooks/</code>.</li>
+<li>Ajoutez l'événement <code>Stop</code> dans la clé <code>hooks</code> de <code>.claude/settings.json</code>, à côté de <code>PreToolUse</code>. Le fichier complet est ci-dessous ; remplacez <code>npm test</code> par votre commande de tests rapides, qui doit se terminer seule : par exemple <code>npm test -- --watch=false</code> (Angular) ou <code>dotnet test --filter Category=Unit</code> (.NET).</li>
+<li>Testez le script seul : <code>echo '{}' | node .claude/hooks/tests-verts.mjs "npm test"</code>, puis <code>echo $?</code> (ou <code>$LASTEXITCODE</code> sous PowerShell). Attendu : 0 si les tests passent, 2 sinon.</li>
+</ol>
+<p>Le hook ne force qu'une seule reprise : au deuxième arrêt, <code>stop_hook_active</code> est vrai et le script laisse Claude s'arrêter, même si les tests sont encore rouges. Relisez donc la fin de la session.</p>
+<div class="code"><div class="code-tete"><span class="code-langue">JSON</span><button type="button" class="copier">Copier</button></div><pre><code class="language-json">{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;Read(**/.env)&quot;,
+      &quot;Edit(**/.env)&quot;
+    ]
+  },
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Read|Edit|Write|Bash|PowerShell|Grep&quot;,
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;node \&quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/protect-env.mjs\&quot;&quot;
+          }
+        ]
+      }
+    ],
+    &quot;Stop&quot;: [
+      {
+        &quot;hooks&quot;: [
+          {
+            &quot;type&quot;: &quot;command&quot;,
+            &quot;command&quot;: &quot;node \&quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/tests-verts.mjs\&quot; npm test&quot;
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre></div>
+<h3 id="fichier-claude-hooks-tests-verts-mjs">Fichier <code>.claude/hooks/tests-verts.mjs</code></h3>
+<div class="code"><div class="code-tete"><span class="code-langue">JavaScript</span><button type="button" class="copier">Copier</button></div><pre><code class="language-js">#!/usr/bin/env node
+// tests-verts.mjs : exemple de hook Stop pour Claude Code. Node.js seul,
+// aucune dépendance (macOS, Linux, Windows).
+//
+// CE QU'IL FAIT
+// Quand Claude veut terminer son tour, Claude Code lance ce script, qui
+// exécute vos tests. Tests verts : code 0, Claude s'arrête. Tests rouges :
+// code 2 et la fin de la sortie sur stderr ; Claude Code empêche alors
+// Claude de s'arrêter et lui transmet le message : il reprend pour corriger.
+//
+// La commande de tests se passe en argument ; sans argument : npm test.
+//   node tests-verts.mjs                       lance npm test
+//   node tests-verts.mjs npm run test:ci       lance npm run test:ci
+//   node tests-verts.mjs &quot;dotnet test --filter Category=Unit&quot;
+// Mettez la commande entre guillemets si elle contient elle-même des
+// guillemets, des parenthèses ou d'autres caractères spéciaux du shell.
+//
+// PIÈGES
+// - Tourner sans fin : si Claude continue déjà à cause d'un hook Stop
+//   (stop_hook_active vrai), le script le laisse s'arrêter sans relancer
+//   les tests. Conséquence : une seule relance par demande ; si les tests
+//   sont encore rouges ensuite, Claude s'arrête quand même. Relisez la fin.
+// - Il tourne à chaque fin de tour : réservez-le à des tests rapides.
+// - La commande doit se terminer : pas de mode watch
+//   (Angular : ng test --watch=false).
+// - Au-delà de 5 minutes, ou si la commande ne se lance pas, il abandonne
+//   sans bloquer Claude (code 1 : erreur non bloquante, affichée à l'écran).
+
+import { spawnSync } from &quot;node:child_process&quot;;
+import process from &quot;node:process&quot;;
+
+const COMMANDE = process.argv.slice(2).join(&quot; &quot;) || &quot;npm test&quot;;
+const DELAI_MAX_MS = 5 * 60 * 1000;
+const LIGNES_GARDEES = 40; // fin de la sortie renvoyée à Claude
+
+// Lancé à la main sans rien sur stdin : on explique au lieu d'attendre.
+if (process.stdin.isTTY) {
+  console.error(&quot;Usage : echo '{}' | node tests-verts.mjs [commande de tests]&quot;);
+  process.exit(0);
+}
+
+let brut = &quot;&quot;;
+process.stdin.setEncoding(&quot;utf8&quot;);
+for await (const morceau of process.stdin) brut += morceau;
+
+const { code, message } = verdict(brut);
+if (message) process.stderr.write(message + &quot;\n&quot;);
+process.exitCode = code;
+
+function verdict(texte) {
+  let entree;
+  try {
+    entree = JSON.parse(texte);
+  } catch {
+    return { code: 0 }; // JSON illisible : on laisse Claude s'arrêter.
+  }
+
+  // Claude continue déjà à cause d'un hook Stop : on le laisse s'arrêter.
+  if (entree?.stop_hook_active === true) return { code: 0 };
+
+  const tests = spawnSync(COMMANDE, {
+    shell: true,
+    cwd: process.env.CLAUDE_PROJECT_DIR || process.cwd(),
+    encoding: &quot;utf8&quot;,
+    timeout: DELAI_MAX_MS,
+    maxBuffer: 50 * 1024 * 1024,
+    windowsHide: true,
+  });
+
+  if (tests.error) {
+    const raison = tests.error.code === &quot;ETIMEDOUT&quot;
+      ? &quot;délai de 5 minutes dépassé&quot;
+      : tests.error.message;
+    return {
+      code: 1,
+      message: `tests-verts : « ${COMMANDE} » n'a pas abouti (${raison}).`
+        + &quot; Vérifiez la commande et qu'elle ne tourne pas en mode watch.&quot;,
+    };
+  }
+
+  if (tests.status === 0) return { code: 0 };
+
+  if (tests.status === 127) {
+    return {
+      code: 1,
+      message: `tests-verts : commande introuvable : ${COMMANDE}`,
+    };
+  }
+
+  const fin = `${tests.stdout ?? &quot;&quot;}\n${tests.stderr ?? &quot;&quot;}`
+    .replace(/\x1b\[[0-9;]*m/g, &quot;&quot;) // retire les codes couleur
+    .trimEnd()
+    .split(/\r?\n/)
+    .slice(-LIGNES_GARDEES)
+    .join(&quot;\n&quot;)
+    .slice(-4000);
+
+  const statut = tests.status ?? tests.signal;
+  return {
+    code: 2,
+    message: [
+      `Les tests ne passent pas (commande : ${COMMANDE}, code ${statut}).`,
+      &quot;Corrigez le code, pas les tests (sauf s'ils sont faux), puis&quot;,
+      &quot;relancez les tests avant de terminer. Fin de la sortie :&quot;,
+      &quot;&quot;,
+      fin,
+    ].join(&quot;\n&quot;),
+  };
+}
+</code></pre></div>
+<h2 id="exercice-creer-votre-skill-65-min">Exercice : créer votre skill (65 min)</h2>
+<div class="tableau c3"><table class="bloc">
+<thead>
+<tr>
+<th>Phase</th>
+<th>Durée</th>
+<th>Ce que vous faites</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0. Installer <code>skill-creator</code></td>
+<td class="insecable">5 min</td>
+<td><code>/plugin install skill-creator@claude-plugins-official</code></td>
+</tr>
+<tr>
+<td>1. Choisir une tâche répétitive</td>
+<td class="insecable">10 min</td>
+<td>Une procédure ou un savoir que vous recollez souvent dans le chat (idées ci-dessous).</td>
+</tr>
+<tr>
+<td>2. Créer le skill</td>
+<td class="insecable">20 min</td>
+<td>À la main avec le modèle ci-dessous, ou avec <code>skill-creator</code>.</td>
+</tr>
+<tr>
+<td>3. Le déclencher sur un cas réel</td>
+<td class="insecable">15 min</td>
+<td>Demandez la tâche sans nommer le skill. Claude l'invoque-t-il seul ? Sinon, retravaillez la description.</td>
+</tr>
+<tr>
+<td>4. Test croisé en binôme</td>
+<td class="insecable">10 min</td>
+<td>Votre binôme demande la tâche avec ses mots, sans nommer le skill.</td>
+</tr>
+<tr>
+<td>5. Commit</td>
+<td class="insecable">5 min</td>
+<td>Le dossier <code>.claude/skills/&lt;nom&gt;/</code> dans votre repo.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Livrable</strong> : un skill versionné dans votre repo.</p>
+<h3 id="des-idees-par-stack">Des idées par stack</h3>
+<div class="tableau c2"><table class="bloc">
+<thead>
+<tr>
+<th>Stack</th>
+<th>Idées de skills</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Angular</td>
+<td>Composant + test ; service HTTP + mock ; revue d'accessibilité</td>
+</tr>
+<tr>
+<td>.NET</td>
+<td>Migration Entity Framework ; endpoint + test xUnit ; mapping DTO</td>
+</tr>
+<tr>
+<td>Java Spring</td>
+<td>Controller + test MockMvc</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>Script + test pytest</td>
+</tr>
+<tr>
+<td>Transverse</td>
+<td>Description de PR ; changelog ; revue de code selon vos conventions</td>
+</tr>
+<tr>
+<td>Un savoir</td>
+<td>Le fonctionnement d'un module, sans étapes : ce qu'il faut savoir et ses pièges</td>
+</tr>
+</tbody>
+</table></div>
+<p>Vous trouvez le code généré « peu propre » (variables inutiles, complexité excessive pour une tâche simple) ? Écrivez un skill de revue selon vos conventions, avec vos exemples de code propre.</p>
+<h3 id="fiche-mon-skill">Fiche : mon skill</h3>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nom (le dossier <code>.claude/skills/&lt;nom&gt;/</code>)</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>La tâche, en une phrase</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Quand Claude doit l'utiliser, avec les mots de vos collègues</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Le fichier modèle à suivre</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>La commande qui prouve que c'est fini</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Un piège que Claude fait sur ce projet</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="mon-skill-se-declenche-t-il">Mon skill se déclenche-t-il ?</h3>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Le fichier est à <code>.claude/skills/&lt;nom&gt;/SKILL.md</code>, nommé exactement <code>SKILL.md</code>.</li>
+<li class="tache"><span class="case"></span>Le frontmatter commence à la toute première ligne du fichier, entre deux lignes <code>---</code>.</li>
+<li class="tache"><span class="case"></span>La description est entre guillemets si elle contient « : » : Claude Code le tolère, mais d'autres outils peuvent la refuser.</li>
+<li class="tache"><span class="case"></span>Le skill apparaît quand vous tapez <code>/</code>. Sinon, et si le dossier <code>.claude/skills/</code> vient d'être créé, relancez la session.</li>
+<li class="tache"><span class="case"></span>La description dit ce que fait le skill et quand l'utiliser, avec les mots que vos collègues emploient.</li>
+<li class="tache"><span class="case"></span>Le skill n'a pas <code>disable-model-invocation: true</code>, sinon Claude ne peut pas le déclencher seul.</li>
+<li class="tache"><span class="case"></span>Demandée sans nommer le skill, la tâche le déclenche : vous voyez Claude l'invoquer.</li>
+<li class="tache"><span class="case"></span>Votre binôme l'a déclenché avec ses propres mots.</li>
+<li class="tache"><span class="case"></span>Le <code>SKILL.md</code> reste court ; les détails sont dans des fichiers annexes.</li>
+<li class="tache"><span class="case"></span>Le skill est commité.</li>
+</ul>
+<p>Le skill n'apparaît pas : vérifiez le chemin et le nom du fichier ; si le dossier <code>.claude/skills/</code> a été créé après le lancement de la session, <code>/reload-skills</code> ou une nouvelle session. Le skill apparaît mais ne se déclenche jamais : <code>claude plugin validate .claude/skills</code> signale un frontmatter invalide (le skill se charge alors sans sa description), comme le journal de <code>claude --debug</code>. (<code>/skill-doctor</code> sert à autre chose : le coût et l'usage des skills déjà chargés.)</p>
+<h3 id="modele-skill-modele-md">Modèle : <code>SKILL.modele.md</code></h3>
+<div class="code"><div class="code-tete"><span class="code-langue">Markdown</span><button type="button" class="copier">Copier</button></div><pre><code class="language-markdown">---
+# Modèle de SKILL.md. Rangez-le dans .claude/skills/&lt;nom&gt;/SKILL.md et
+# supprimez ces lignes de commentaire une fois le modèle rempli.
+#
+# name : nom du skill, celui qu'on tape après « / ». Minuscules et tirets.
+# Par défaut, Claude Code prend le nom du dossier : gardez les deux identiques.
+name: nom-du-skill
+#
+# description : ce que fait le skill, puis quand l'utiliser. C'est elle qui
+# déclenche le skill : écrivez-la avec les mots de vos collègues. Gardez-la
+# entre guillemets : Claude Code tolère un « : » dans la description, mais
+# d'autres outils peuvent la refuser, et un YAML invalide charge le skill
+# sans aucun de ses champs.
+description: &quot;Fait &lt;la tâche&gt; selon nos conventions. À utiliser quand &lt;situation&gt;.&quot;
+#
+# when_to_use : facultatif. Phrases de déclenchement, exemples de demandes.
+# Ajouté à la description dans la liste des skills (1 536 caractères au
+# total pour les deux).
+when_to_use: &quot;Exemples : « &lt;demande typique 1&gt; », « &lt;demande typique 2&gt; ».&quot;
+---
+
+# &lt;Titre du skill&gt;
+
+## Objectif
+
+&lt;!-- Une ou deux phrases : le résultat attendu, et pour qui. --&gt;
+
+## Étapes
+
+&lt;!-- Numérotées, une action par ligne, avec les commandes exactes du projet
+     et le fichier modèle à suivre. --&gt;
+
+1. Lire `&lt;fichier modèle à suivre&gt;`.
+2. Lancer `&lt;commande exacte&gt;`.
+3. Écrire `&lt;fichier&gt;` en suivant le modèle.
+4. Lancer `&lt;commande de test&gt;` et corriger jusqu'à ce qu'elle passe.
+
+## Pièges
+
+&lt;!-- Ce que Claude fait de travers sur CE projet. Une ligne par piège.
+     Ajoutez-en un chaque fois que le skill se trompe. --&gt;
+
+- Ne pas &lt;erreur fréquente&gt; : &lt;ce qu'il faut faire à la place&gt;.
+
+## Vérification
+
+&lt;!-- Comment Claude prouve que c'est fini : commande, sortie attendue. --&gt;
+
+- `&lt;commande de test&gt;` passe.
+- Le diff ne touche que &lt;périmètre attendu&gt;.
+</code></pre></div>
+
+
+<h2 id="le-ticket-fil-rouge">Le ticket fil rouge</h2>
+<p>Ce soir, choisissez dans votre backlog le ticket qui servira demain : à l'Atelier 2, vous en écrirez la spec et le plan d'exécution ; à l'Atelier 3, vous l'exécuterez en parallèle. Demain matin, vous le dites en une phrase, 15 secondes chacun.</p>
+<p>Pas de projet accessible depuis votre poste de formation ? Demain, la pratique se fait aussi sur Tailspin Toys, un projet d'entraînement commun : vous y choisirez votre ticket sur place, dans son backlog ou parmi vos idées. Rien à préparer ce soir.</p>
+<div class="tableau c3"><table class="a-remplir">
+<thead>
+<tr>
+<th>Critère</th>
+<th>La question à se poser</th>
+<th>Mon ticket</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Taille</td>
+<td>Une demi-journée à deux jours de travail pour un humain ?</td>
+<td class="insecable">oui · non</td>
+</tr>
+<tr>
+<td>Découpable</td>
+<td>Peut-il se couper en 2 ou 3 morceaux indépendants ?</td>
+<td class="insecable">oui · non</td>
+</tr>
+<tr>
+<td>Vérifiable</td>
+<td>Des tests diront-ils que c'est fini ? Sinon, l'agent écrira les tests d'abord.</td>
+<td class="insecable">oui · non</td>
+</tr>
+<tr>
+<td>Montrable</td>
+<td>Pas confidentiel au point de ne pas pouvoir en parler devant le groupe ?</td>
+<td class="insecable">oui · non</td>
+</tr>
+</tbody>
+</table></div>
+<p>Gardez le deuxième ticket candidat en réserve. Si aucun ne convient, prenez demain un ticket de Tailspin Toys.</p>
+<h3 id="fiche-mon-ticket-fil-rouge-a-remplir-ce-soir">Fiche : mon ticket fil rouge (à remplir ce soir)</h3>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Projet</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Ticket : titre et lien</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Ce qui change pour l'utilisateur, en une phrase</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>« Fini » veut dire… (un critère vérifiable)</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>La commande qui le vérifie</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Morceau 1</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Morceau 2</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Morceau 3 (facultatif)</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Ce que les morceaux partagent (fichiers, types, données)</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Les fichiers ou les zones touchés</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Des tests existent sur cette zone ?</td>
+<td class="insecable">oui · non · en partie</td>
+</tr>
+<tr>
+<td>Ce qui m'inquiète, les inconnues</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Mon ticket de réserve</td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section class="partie">
+<h1 id="j2-matin-cahier">J2 matin — Cahier</h1>
+<p>Le fil rouge du J2 : un seul ticket, du matin au soir.</p>
+<div class="tableau c3"><table class="bloc">
+<thead>
+<tr>
+<th>Quand</th>
+<th>Étape</th>
+<th>Ce que vous produisez</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>En arrivant</td>
+<td>Votre projet, ou Tailspin Toys</td>
+<td>Un projet qui tourne, la chaîne de skills installée</td>
+</tr>
+<tr>
+<td>Début de matinée</td>
+<td>Le projet présenté par Claude, puis votre ticket du jour</td>
+<td>Votre ticket, en une phrase</td>
+</tr>
+<tr>
+<td>Milieu de matinée</td>
+<td>Atelier 2, étape par étape</td>
+<td>La spec, les tickets, le plan de composition</td>
+</tr>
+<tr>
+<td>Fin de matinée</td>
+<td>« <code>/goal</code> à blanc », puis la condition d'arrêt</td>
+<td>Une condition <code>/goal</code>, écrite puis lancée : la loop tourne pendant le déjeuner</td>
+</tr>
+<tr>
+<td>Début d'après-midi</td>
+<td>La préparation des worktrees</td>
+<td>Votre branche, prête pour l'Atelier 3</td>
+</tr>
+<tr>
+<td>Après-midi</td>
+<td>Atelier 3, puis l'exercice MCP</td>
+<td>Les tickets en parallèle, un serveur MCP et son sous-agent</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="votre-projet-ou-tailspin-toys">Votre projet, ou Tailspin Toys</h2>
+<p>Un projet sur lequel avancer aujourd'hui, perso ou client, accessible depuis ce poste ? Restez dessus. Sinon, installez Tailspin Toys, le projet d'entraînement de la journée :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">git clone https://github.com/denneulin/tailspin-toys.git
+cd tailspin-toys
+npm ci
+npm run dev        # http://localhost:4321
+</code></pre></div>
+<p>Git, Node 24, un poste sans droits d'administrateur, le partage d'écran : tout est sur la page « Démarrer le J2 », à côté du cahier sur la page du livret.</p>
+<h3 id="installer-la-chaine">Installer la chaîne</h3>
+<p>Puis, pour tous, dans Claude Code lancé dans votre projet : la marketplace de Matt Pocock, et elle seule aujourd'hui, pour que tout le monde ait la même version (affichée 1.3.1).</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">/plugin marketplace add mattpocock/skills
+/plugin install mattpocock-skills@mattpocock
+</code></pre></div>
+<p>Sur Tailspin, le setup est déjà fait. Sur votre projet, lancez <code>/setup-matt-pocock-skills</code> sur une branche, et choisissez les fichiers Markdown locaux : il écrit dans <code>docs/agents/</code> et ajoute un bloc « ## Agent skills » à votre CLAUDE.md.</p>
+<h2 id="exercice-faites-vous-presenter-le-projet-7-min">Exercice : faites-vous présenter le projet (7 min)</h2>
+<ol>
+<li><strong>À votre façon (4 min)</strong>. Lancez Claude Code dans le projet, et demandez-lui de vous le présenter : ce que vous demanderiez à un collègue, le premier jour. <strong>Ne modifiez rien.</strong></li>
+<li><strong>Puis ce prompt (3 min)</strong>, dans la même session. Sur votre projet, remplacez <code>backlog/</code> par votre outil de tickets.</li>
+</ol>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">Ne modifie rien. Présente-moi ce projet en cinq lignes : ce qu'il fait,
+sa stack, comment on lance les tests. Puis résume chaque ticket de
+backlog/ en une ligne : ce qui change pour l'utilisateur.
+</code></pre></div>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ce que le prompt a changé, par rapport à votre façon</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Gardez la réponse ouverte : vous choisissez votre ticket juste après.</p>
+<h2 id="votre-ticket-du-jour-5-min">Votre ticket du jour (5 min)</h2>
+<div class="tableau c2"><table class="bloc">
+<thead>
+<tr>
+<th>Votre ticket</th>
+<th>Où le trouver</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Un ticket de votre projet, perso ou client</td>
+<td>votre backlog, avec les quatre critères de la fiche d'hier soir</td>
+</tr>
+<tr>
+<td><strong>La 07</strong>, proposée à tous sur Tailspin : filtrer les jeux par catégorie et par éditeur</td>
+<td><code>backlog/07-filter-games.md</code></td>
+</tr>
+<tr>
+<td>Un autre ticket du backlog de Tailspin, de 01 à 06</td>
+<td><code>backlog/</code> et le README</td>
+</tr>
+<tr>
+<td>Votre idée sur Tailspin : une liste de souhaits, des avis…</td>
+<td>une phrase à vous</td>
+</tr>
+</tbody>
+</table></div>
+<div class="tableau c1"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>Mon ticket, en une phrase : ce qui change pour l'utilisateur, pas comment le coder</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Puis tour rapide : 15 secondes chacun, votre phrase.</p>
+<p>Si ça coince : la 08 (des standards de code, rien de visible à l'écran) et la 09 (un assistant IA, il faut une clé d'API) sont déconseillées. Une idée trop petite (un libellé, une couleur) : il n'y aurait rien à découper ni à paralléliser ; élargissez-la, ou prenez la 07. Une idée qui enregistre quelque chose (une liste de souhaits, des avis) passe par une route servie à la demande : le README donne le modèle, <code>src/pages/api/games/[id].ts</code>. Un ticket de votre projet trop gros : n'en gardez qu'une tranche, qui se livre et se vérifie seule. Un ticket confidentiel : décrivez-le en termes génériques.</p>
+<h2 id="atelier-2-de-votre-ticket-a-une-spec-et-des-tickets-58-min-seul">Atelier 2 : de votre ticket à une spec et des tickets (58 min, seul)</h2>
+<p>Chacun sur son ticket, seul. On avance ensemble, étape par étape : chaque étape s'affiche quand on y arrive, et on passe à la suivante au signal. Fini en avance ? Chaque étape dit quoi approfondir.</p>
+<p><strong>Livrable</strong> : la spec de votre ticket, vos tickets avec leurs dépendances, et votre plan de composition. C'est le livrable 3 du programme (un plan de composition de skills sur une tâche réelle), et la carte de l'Atelier 3.</p>
+<h3 id="etape-1-se-faire-interviewer-23-min">Étape 1 : se faire interviewer (23 min)</h3>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">git switch -c &lt;votre-ticket&gt;     # 07-filtres pour la 07
+/model opus
+/grill-with-docs &lt;votre ticket : le chemin du fichier, ou votre phrase&gt;
+</code></pre></div>
+<ul>
+<li><strong>La branche</strong> porte le nom de votre ticket : dès l'interview, Claude écrit dans le repo, et tout ce que vous produisez aujourd'hui va sur cette branche, votre branche de travail. Sur votre projet, si vous avez déjà créé une branche pour le setup, restez dessus.</li>
+<li><strong><code>/model opus</code></strong> : c'est déjà le modèle par défaut, on le vérifie, parce que la conception, c'est du jugement.</li>
+<li><strong>Tranchez les termes</strong> qu'il vous propose : ils partent dans <code>GLOSSARY.md</code>, à la racine du repo.</li>
+<li><strong>Répondez vraiment</strong> quand une recommandation ne vous va pas : le product owner, c'est vous. Celles qui vous vont, acceptez-les en le disant en toutes lettres : « j'accepte tes recommandations pour Q1 et Q2 ».</li>
+<li>Quand il résume et vous demande s'il peut y aller : <strong>ne dites pas oui</strong>. On passe à l'étape suivante ensemble.</li>
+</ul>
+<p>Fini en avance ? Demandez-lui : « Quelles décisions as-tu prises à ma place ? », puis relisez <code>GLOSSARY.md</code> : chaque terme a-t-il un seul sens ?</p>
+<h3 id="etape-2-la-spec-9-min">Étape 2 : la spec (9 min)</h3>
+<p>Dans la même session, sans <code>/clear</code> :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">/to-spec Dis-moi d'abord où tu comptes tester, et attends mon accord avant d'écrire.
+</code></pre></div>
+<ul>
+<li>Il <strong>n'interviewe plus</strong> : il synthétise votre conversation, explore le code et vous propose ses <strong>points de test</strong> (<em>seams</em>), là où ses tests attaqueront le code : une fonction, une route, une page. Validez-les ou corrigez-les.</li>
+<li>Puis il écrit <code>spec.md</code> dans <code>.scratch/&lt;fonctionnalité&gt;/</code>. Lisez surtout <strong>Implementation Decisions</strong> et <strong>Out of Scope</strong>.</li>
+</ul>
+<p>Fini en avance ? Relisez Out of Scope : ce qui y manque, faites-le ajouter (« Ajoute à Out of Scope : … »).</p>
+<h3 id="etape-3-les-tickets-11-min">Étape 3 : les tickets (11 min)</h3>
+<p>Toujours dans la même session :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">/to-tickets
+</code></pre></div>
+<ul>
+<li>Demandez <strong>un premier ticket qui en débloque deux</strong> : une loop fera le premier avant le déjeuner, les deux suivants partiront en parallèle l'après-midi. Sur la 07, le ticket le prévoit déjà : vérifiez-le.</li>
+<li><strong>Refusez un découpage par couche</strong> : une tranche verticale par ticket, vérifiable seule.</li>
+<li>Les tickets arrivent dans <code>.scratch/&lt;fonctionnalité&gt;/issues/</code>, chacun avec sa ligne « Blocked by ».</li>
+</ul>
+<p>Relisez vos tickets avant l'étape 4 : personne ne le fera à votre place.</p>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Chaque ticket est une tranche verticale : il traverse toutes les couches.</li>
+<li class="tache"><span class="case"></span>Chacun se vérifie seul.</li>
+<li class="tache"><span class="case"></span>Les « Blocked by » sont justes.</li>
+</ul>
+<h3 id="etape-4-le-plan-de-composition-9-min">Étape 4 : le plan de composition (9 min)</h3>
+<p>Une ligne par ticket. Recopiez « Bloqué par » depuis vos fichiers de tickets. Notez les skills qui existent déjà et serviront (ceux de la chaîne comme <code>/tdd</code> et <code>/implement</code>, celui que vous avez écrit au J1 s'il s'applique, ceux de votre projet), puis ceux qui manquent, et la commande qui prouve que le ticket est fini.</p>
+<div class="tableau c5"><table class="a-remplir">
+<thead>
+<tr>
+<th>Ticket</th>
+<th>Bloqué par</th>
+<th>Skills qui existent</th>
+<th>Skills à créer</th>
+<th>Vérification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Exemple : 01 Filtrer par une catégorie, de bout en bout</em></td>
+<td><em>—</em></td>
+<td><em><code>/tdd</code>, <code>/implement</code></em></td>
+<td><em>un skill « filtre de liste », si ça revient</em></td>
+<td><em><code>npm run test:unit</code></em></td>
+</tr>
+<tr>
+<td class="ecrire l3"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l3"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l3"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l3"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l3"></td>
+<td class="ecrire l1"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Bloqué par</strong> : le ticket qui n'est bloqué par rien part dans une loop avant le déjeuner ; ceux qu'il bloquait partent en parallèle l'après-midi, un worktree chacun.</li>
+<li><strong>Vérification</strong> : le point de départ de votre condition d'arrêt. Dans Tailspin, le CLAUDE.md la donne : les tests, le lint et les types (<code>npm run test:unit</code>, <code>npm run lint</code>, <code>npm run typecheck</code>). Sur votre projet, la commande de test en mode CI de l'équipe. Pas de tests sur la zone : écrivez « d'abord : un test qui reproduit le comportement attendu ». C'est une vraie ligne de plan, et souvent un premier ticket.</li>
+<li><strong>Skills à créer</strong> : un skill existant suffit-il ? Une étape qui se répète assez pour mériter un skill (générer des données de test, ajouter un filtre ou un tri à une liste, créer un composant au gabarit de l'équipe, écrire une route) est un bon candidat pour votre plan d'adoption à 30 jours.</li>
+</ul>
+<h3 id="restitution-express-5-min">Restitution express (5 min)</h3>
+<p>Trois volontaires, 90 secondes chacun : votre ticket en une phrase ; combien de tickets, et lesquels peuvent partir en parallèle ; une question de l'interview qui vous a surpris.</p>
+<h3 id="si-ca-coince-2">Si ça coince</h3>
+<ul>
+<li>L'installation coince encore : demandez de l'aide d'abord ; l'interview n'a besoin que du projet et des skills.</li>
+<li><code>/model opus</code> refusé, ou un autre modèle par défaut : restez sur le modèle proposé, ce n'est pas bloquant.</li>
+<li>Pas de <code>GLOSSARY.md</code> : aucun terme n'a encore été tranché ; il le crée au premier.</li>
+<li>Une ADR proposée dans <code>docs/adr/</code> : une décision lui semble difficile à défaire. Sur la 07, la plus probable : filtrer dans le navigateur, sur la liste déjà affichée, ou servir la liste à la demande. Les deux se défendent : c'est à vous de trancher.</li>
+<li>L'interview n'en finit pas : c'est normal, le skill pose des dizaines de questions. Au signal, on passe à l'étape 2 quoi qu'il reste : la synthèse se contente de ce qui a été dit, et signale ce qui n'a pas reçu de réponse.</li>
+<li>Claude se met à coder à la fin de l'interview : Esc, puis <code>/rewind</code> pour revenir au point d'avant (il ne suit pas les modifications faites par des commandes Bash), ou « Annule ces modifications ». Vérifiez avec <code>git status</code>.</li>
+<li><code>/to-spec</code> demande de lancer le setup : sur Tailspin, vérifiez que la session tourne dans le dossier <code>tailspin-toys</code> ; sur votre projet, lancez <code>/setup-matt-pocock-skills</code>, choisissez les fichiers locaux, puis relancez <code>/to-spec</code>.</li>
+<li><code>/to-spec</code> dit avoir suivi ses recommandations pour les questions restées sans réponse : il ne cache pas les trous ; relisez ce passage.</li>
+<li>Spec très longue : c'est le gabarit. Lisez Implementation Decisions et Out of Scope.</li>
+<li>Trop de tickets (six ou sept pour la 07) : « Fusionne en quatre tickets au plus. »</li>
+<li>Tickets par couche (« 01 la fonction de filtrage, 02 l'interface ») : refusez. « Une tranche verticale par ticket, testable seule. »</li>
+<li>Sur la 07, le ticket a une section « Delivery » : une catégorie de bout en bout, puis l'éditeur et plusieurs catégories en parallèle, chacun dans ses fichiers, puis la combinaison, en tranche à part. Votre graphe doit donc être 01, puis 02 et 03 en parallèle, puis 04.</li>
+<li>Sur la 07, pas deux tickets à lancer en parallèle après le premier, ou pas de 04 : « Relis la section Delivery du ticket 07, et redécoupe en la suivant. » Si ça résiste, le découpage de secours a la bonne forme : <code>git fetch origin</code>, puis <code>git switch secours/07-filtres</code>.</li>
+<li>Graphe linéaire alors que le ticket semblait découpable : demandez à <code>/to-tickets</code> pourquoi. Parfois c'est justifié (un refactoring large) ; parfois, un ticket préalable qui rend le changement facile débloque tout le reste.</li>
+<li>Le setup a modifié votre CLAUDE.md : c'est normal, et c'est pour ça que vous êtes sur une branche.</li>
+<li>Java, Python ou .NET : la chaîne ne dépend pas du langage.</li>
+</ul>
+<h2 id="exercice-goal-a-blanc-4-min">Exercice : « <code>/goal</code> à blanc » (4 min)</h2>
+<p>Sur votre branche, d'abord <code>/clear</code> : sans lui, Claude a vos tickets en tête et pourrait se mettre à coder. Puis :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">/clear
+/goal npm run test:unit passe ; sinon arrête-toi après 2 tours
+</code></pre></div>
+<p>Sur votre projet : votre commande de tests, à la place de <code>npm run test:unit</code>. Regardez combien de tours il lui faut, et ce qu'il a écrit. Puis Ctrl+O : la raison du verdict.</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Combien de tours, et ce qu'il a écrit</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Qu'est-ce qui cloche ?</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Si ça coince : Claude se met à coder un ticket (le <code>/clear</code> oublié) : Esc, <code>/goal clear</code>, <code>git status</code>, puis recommencez avec <code>/clear</code>. Sur votre projet, sans tests ou avec une commande qui échoue : l'évaluateur rend « pas encore », et le plafond arrête Claude ; c'est l'autre leçon.</p>
+<h2 id="exercice-la-condition-d-arret-de-votre-ticket-11-min">Exercice : la condition d'arrêt de votre ticket (11 min)</h2>
+<ol>
+<li>Prenez le <strong>premier ticket</strong> de votre graphe : celui qui n'est bloqué par rien.</li>
+<li>Écrivez sa <strong>condition <code>/goal</code></strong> ci-dessous : un état final mesurable, une vérification énoncée, les contraintes, <strong>et un plafond</strong>. Partez de la colonne « Vérification » du plan de composition et des critères d'acceptation du ticket : chaque case à cocher vérifiable peut devenir une clause. Ce qui manque au harness pour lâcher ce ticket, mettez-le dans la condition.</li>
+<li>Relisez-la avec la question et la liste ci-dessous. <strong>Ne la lancez pas encore</strong> : on la lance ensemble juste après. Fini en avance ? Écrivez celle du ticket suivant de votre graphe, dans la dernière case : elle servira cet après-midi.</li>
+<li><strong>Au signal, lancez-la</strong> : sur votre branche, vérifiez le mode Auto (⏵⏵ auto mode on dans la barre d'état ; sinon, Shift+Tab), puis collez votre condition, <code>/goal …</code>. <code>/goal</code> seul affiche le statut ; Ctrl+O, la raison du verdict. Elle tourne pendant le déjeuner : session ouverte, ordinateur branché, sans mise en veille, et pas de <code>/clear</code>. Le verdict, on le regarde à la reprise.</li>
+</ol>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier" data-une-ligne>Copier sur une ligne</button></div><pre><code class="language-text">/goal &lt;le nouveau test du ticket, nommé&gt; passe,
+  et npm run test:unit, npm run lint et npm run typecheck passent ;
+  aucun autre fichier de test n'est modifié, ce que montre git status ;
+  sinon arrête-toi après &lt;n&gt; tours.
+</code></pre></div>
+<p>Sur votre projet : votre commande de tests, de lint ou de build, à la place des trois commandes de Tailspin.</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Le ticket (le premier de votre graphe)</td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+<div class="tableau c1"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>Ma condition <code>/goal</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l3"></td>
+</tr>
+</tbody>
+</table></div>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>La question de la relecture</th>
+<th>Ma réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>« L'évaluateur pourrait-il trancher en lisant seulement la sortie de Claude ? »</td>
+<td class="insecable">oui · non</td>
+</tr>
+<tr>
+<td>Ce que je change</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<p>À la répétition, l'évaluateur a validé une condition en notant « …but the condition does not require that rendering check ». Il juge ce que vous avez écrit, pas ce que vous vouliez dire.</p>
+<p><strong>Relecture : ma condition a-t-elle tout ?</strong></p>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Un état final mesurable : un résultat de tests, un code de sortie, un nombre de fichiers.</li>
+<li class="tache"><span class="case"></span>Une vérification énoncée : la commande dont la sortie montre cet état.</li>
+<li class="tache"><span class="case"></span>Elle est fausse avant le travail : elle nomme le test ou le critère du ticket, pas seulement une suite qui passe déjà (c'est le piège de « <code>/goal</code> à blanc »).</li>
+<li class="tache"><span class="case"></span>Les contraintes qui comptent, dont : aucun autre fichier de test n'est modifié, ce que montre <code>git status</code>.</li>
+<li class="tache"><span class="case"></span>Un plafond : « sinon arrête-toi après N tours ».</li>
+<li class="tache"><span class="case"></span>Tout est visible dans la sortie de Claude : une contrainte comme « ne touche pas à la page d'accueil » se démontre, par exemple avec un <code>git status</code> demandé dans la condition.</li>
+</ul>
+<div class="tableau c1"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>Fini en avance : la condition du ticket suivant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l3"></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Les pièges fréquents</strong></p>
+<ul>
+<li>« Le code est propre », « le filtre fonctionne » : invérifiables. Remplacez-les par une commande de lint qui sort en 0, ou par un test qui prouve le filtre et la commande qui le lance. L'écran, c'est vous qui le regardez : l'évaluateur ne lit que la sortie de Claude.</li>
+<li>Condition déjà vraie avant le travail : la suite est verte et la condition ne nomme pas le test du ticket. L'évaluateur dira « atteint » au premier tour, sans une ligne écrite : nommez le test ou le critère du ticket.</li>
+<li>Pas de test sur la zone : la condition commence par « un test qui reproduit le comportement attendu est écrit et échoue, puis passe ». Ticket « expand », qui ajoute sans rien changer à l'écran : elle porte sur les nouveaux tests, et sur les anciens qui restent verts.</li>
+<li>Suite de tests trop longue (plusieurs minutes) : ciblez les tests du module, puisque chaque tour relance la commande.</li>
+<li>La loop lancée en mode Manual : elle attendrait une réponse à la première demande de permission, pendant tout le déjeuner. Esc, <code>/goal clear</code>, passez en Auto, et relancez-la.</li>
+</ul>
+</section>
+<section class="partie">
+<h1 id="j2-apres-midi-cahier">J2 après-midi — Cahier</h1>
+<h2 id="exercice-preparez-vos-worktrees-5-min">Exercice : préparez vos worktrees (5 min)</h2>
+<p>Un worktree ne contient que ce qui est committé : sans ce commit, il ne voit ni vos tickets ni le code de votre loop.</p>
+<ol>
+<li><strong>Committez</strong> sur votre branche de travail ce que le matin a produit : le <code>.scratch/</code> de votre ticket, <code>GLOSSARY.md</code>, <code>docs/adr/</code> s'il existe, et le code de votre loop.</li>
+<li><strong>Vérifiez</strong> : <code>git status</code> est propre, et <code>git log -1</code> montre ce commit.</li>
+<li><strong>Créez votre premier worktree</strong> : <code>claude -w &lt;ticket&gt; --model sonnet</code>, vérifiez qu'il voit vos tickets (<code>!ls .scratch</code>), puis <code>/exit</code> : l'étape 1 de l'atelier le recrée sur le dernier commit. Ne lancez pas encore d'agent.</li>
+</ol>
+<p>Dans Tailspin, vos worktrees partent de votre commit, et rien n'est à installer dedans. La loop de midi a échoué sur la 07 : <code>git fetch origin</code>, puis <code>git switch secours/07-filtres-01-fait</code>.</p>
+<p>Sur votre projet, trois gestes de plus :</p>
+<ul class="taches">
+<li class="tache"><span class="case"></span><code>.claude/worktrees/</code> dans le <code>.gitignore</code>.</li>
+<li class="tache"><span class="case"></span><code>{ "worktree": { "baseRef": "head" } }</code> dans <code>.claude/settings.local.json</code> : sans lui, le worktree part de la branche par défaut du remote, sans vos tickets ni le setup. Si le réglage résiste : <code>git worktree add -b &lt;branche&gt; &lt;dossier&gt;</code>, puis <code>claude</code> dans ce dossier.</li>
+<li class="tache"><span class="case"></span>Les dépendances : <code>npm ci</code> côté Angular, <code>dotnet restore</code> côté .NET, ou demandez à Claude de les installer ; le <code>.env</code>, copié à la main pour l'atelier (<code>.worktreeinclude</code> pour la suite).</li>
+</ul>
+<h2 id="atelier-3-vos-tickets-en-parallele-84-min-pause-comprise-seul">Atelier 3 : vos tickets, en parallèle (84 min, pause comprise, seul)</h2>
+<p>Chacun sur ses tickets, seul. Comme à l'Atelier 2, on avance ensemble, étape par étape, et on change d'étape au signal. La pause de 15 minutes est fixe : la loop du ticket suivant tourne pendant ce temps.</p>
+<p><strong>Livrable</strong> : deux tickets faits en même temps, puis fusionnés ; une analyse en parallèle ; vos tentations, classées. C'est le livrable 4 du programme : un workflow multi-agent testé avec worktrees et sous-agents.</p>
+<p><strong>La règle de tout l'atelier</strong> : tant que le harness ne remonte rien, vous n'intervenez pas. Chaque tentation de reprendre la main, notez-la, avec sa raison, dans la grille des tentations, juste après l'atelier : on les classe à l'étape 5.</p>
+<p><strong>Ce qui compte comme « le harness remonte quelque chose »</strong> :</p>
+<ul>
+<li>Une demande de permission : vous y répondez, c'est autorisé.</li>
+<li>Un hook qui bloque.</li>
+<li>Un verdict « impossible » de <code>/goal</code>.</li>
+<li>Le plafond de tours atteint.</li>
+<li>Une session qui rend la main avec un « reste à faire ».</li>
+</ul>
+<p>Tout le reste, y compris une session qui semble partir dans le décor : notez la tentation, n'intervenez pas.</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Les deux tickets de ma frontière : ceux qui ne sont plus bloqués par rien</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Le ticket qu'ils débloquent</td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="etape-1-deux-tickets-deux-worktrees-en-meme-temps-11-min">Étape 1 : deux tickets, deux worktrees, en même temps (11 min)</h3>
+<p>Deux terminaux, à la racine de votre projet, un par ticket de votre frontière.</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text"># Terminal 1 : le skill de Pocock
+claude -w &lt;ticket-1&gt; --model sonnet
+/implement &lt;chemin du ticket 1&gt;
+
+# Terminal 2 : votre pipeline
+claude -w &lt;ticket-2&gt; --model sonnet
+&lt;le prompt du pipeline, avec le chemin du ticket 2&gt;
+</code></pre></div>
+<ul>
+<li><strong>⏵⏵ auto mode on</strong> dans chaque session (sinon, Shift+Tab), et <strong>lancez les deux</strong> avant d'en regarder un : c'est ça, le parallèle.</li>
+<li>À regarder : le test d'abord, les sous-agents de revue (<code>/tasks</code>), le commit de <code>/implement</code> ; le « fait / reste à faire » du pipeline, qui ne committe pas.</li>
+<li>L'implémentation tourne sur Sonnet ; dans le pipeline, seul le relecteur passe sur Opus.</li>
+</ul>
+<p>Un seul ticket sur la frontière, parce que le graphe est linéaire ? Le pipeline seul, dans un worktree : c'est déjà un workflow multi-agent. Fini en avance ? Votre condition <code>/goal</code>, adaptée au ticket, dans chaque session, quand Claude a rendu la main : elle doit nommer le nouveau test, puisque les tests existants passent déjà.</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Le nom de mes deux worktrees</td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Le prompt du pipeline.</strong> Remplacez le chemin par celui de votre ticket 2. Il est expliqué sur la slide « Un pipeline, en un prompt » ; le détail est dans le récap.</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">Prends le ticket .scratch/&lt;fonctionnalité&gt;/issues/01-….md.
+Attends le rapport de chaque sous-agent avant l'étape suivante.
+1. Implémentation : un sous-agent Sonnet nommé impl. Il ne lance
+   pas d'agent. Il lance les tests ciblés avant son rapport ;
+   un critère d'acceptation = une preuve.
+2. Revue : un sous-agent Opus, en lecture seule, relit le diff
+   contre le ticket, sans le rapport d'impl. Il ne corrige rien
+   et ne lance pas d'agent. Il ne signale que ce qui touche la
+   correction ou le ticket : bloquant / important / mineur,
+   avec fichier:ligne.
+3. Correction : renvoie les constats à impl avec SendMessage,
+   un tour au plus.
+4. Ne committe pas. Termine par : fait / reste à faire.
+</code></pre></div>
+<h3 id="etape-2-relire-contre-le-ticket-12-min">Étape 2 : relire, contre le ticket (12 min)</h3>
+<p>Dans chaque session (le point d'exclamation lance la commande vous-même ; <code>git add -N</code> fait entrer dans le diff les fichiers créés par le pipeline, sans les indexer) :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">!git show --stat            # /implement : il a committé
+!git add -N . &amp;&amp; git diff   # le pipeline : rien n'est committé
+</code></pre></div>
+<ul>
+<li><strong>Le ticket ouvert à côté</strong>, critère par critère : qu'est-ce qui le prouve ? Le diff et le test, pas le rapport de l'agent.</li>
+<li><strong>Le site</strong> : « Lance le serveur de dev et donne-moi l'URL », dans chaque session ; un port chacun (4321, 4322…). Faites dans le navigateur ce qu'aucun test ne prouve : sur la 07, la vérification au clavier que demandent les tickets.</li>
+<li><strong>Le travail du pipeline</strong> que vous gardez : « Committe ce ticket sur cette branche. » Sans commit, l'étape 3 ne fusionne rien.</li>
+<li>Un défaut trouvé : notez-le dans la grille, puis renvoyez-le à la session (« Le critère 3 n'est pas prouvé : … ») ; ne le corrigez pas vous-même dans l'éditeur.</li>
+</ul>
+<p>Fini en avance ? Vérifiez dans le code un constat du relecteur Opus. Et lequel a trouvé le plus : la revue de <code>/implement</code>, ou le pipeline ?</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Un critère qu'aucun test ne prouvait, et ce que j'ai vu dans le navigateur</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>La revue qui a trouvé le plus : <code>/implement</code> ou le pipeline</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="etape-3-fusionner-la-frontiere-avance-13-min">Étape 3 : fusionner, la frontière avance (13 min)</h3>
+<p>Un troisième terminal, à la racine, sur votre branche de travail :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">git merge --no-edit worktree-&lt;ticket-1&gt;
+git merge --no-edit worktree-&lt;ticket-2&gt;
+npm run test:unit
+</code></pre></div>
+<ul>
+<li><strong>Un conflit ?</strong> Dans ce terminal, <code>claude</code>, puis « Résous le conflit, et lance les tests ». Vous relisez. Notez-le dans la grille : le découpage n'était pas si indépendant.</li>
+<li><strong>Le ticket suivant est débloqué</strong> : écrivez sa condition <code>/goal</code> ci-dessous, sur le modèle de ce matin, puis, dans un quatrième terminal, à la racine, <code>claude -w &lt;ticket-3&gt; --model sonnet</code>, le mode Auto vérifié, et lancez-la. Elle tourne pendant la pause : session ouverte, ordinateur branché, pas de mise en veille.</li>
+<li>Le piège, quand les deux fusions suffisent à faire marcher le ticket suivant (sur la 07, la combinaison) : « les tests passent » est vrai avant le premier tour, c'est le « <code>/goal</code> à blanc » de ce matin. La condition nomme le nouveau test.</li>
+</ul>
+<p>Rien de débloqué ? Une condition <code>/goal</code> sur ce qui reste de votre graphe.</p>
+<div class="tableau c1"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>La condition <code>/goal</code> du ticket débloqué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l3"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="pause-15-min">Pause (15 min)</h3>
+<p>Votre loop tourne. Sur votre projet, et vous voulez faire l'exercice MCP sur Tailspin ? Installez-le maintenant (page « Démarrer le J2 »).</p>
+<h3 id="etape-4-analyser-en-parallele-17-min">Étape 4 : analyser en parallèle (17 min)</h3>
+<ol>
+<li><strong>Le verdict de votre loop</strong>, dans le terminal 4 : <code>/goal</code>, puis Ctrl+O. Atteinte : relisez son diff (<code>!git add -N . &amp;&amp; git diff</code>), puis « Committe ce ticket sur cette branche ». Pas atteinte : la raison de l'évaluateur va dans la grille ; c'est souvent la condition, pas l'agent, et on ne fusionne pas.</li>
+<li><strong>Terminal 3</strong>, à la racine : si la loop est atteinte, <code>git merge --no-edit worktree-&lt;ticket-3&gt;</code> puis <code>npm run test:unit</code> ; l'analyse portera ainsi sur le code complet. Puis <code>claude --model sonnet</code> (les sous-agents Explore suivent le modèle de la session), et le prompt ci-dessous, rempli. Sur Tailspin : le module <code>src</code>, les axes tests, accessibilité, sécurité, le nom <code>src</code>. Regardez <code>/tasks</code> : trois sous-agents, en même temps, en lecture seule.</li>
+<li><strong>Vérifiez vous-même</strong> une affirmation de <code>roadmap.md</code> que l'orchestrateur n'a pas vérifiée, en ouvrant le fichier cité.</li>
+</ol>
+<p><code>&lt;module&gt;</code> est le dossier à auditer, <code>&lt;axe 1&gt;</code> à <code>&lt;axe 3&gt;</code> vos axes, <code>&lt;nom&gt;</code> un nom court pour le dossier des rapports. Avec quatre axes, écrivez « quatre » partout où le prompt dit « trois ». Restez en mode Auto, ou passez en Accept edits : l'orchestrateur écrit quatre fichiers.</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">Audite le module &lt;module&gt; sur trois axes, en parallèle : &lt;axe 1&gt;, &lt;axe 2&gt;, &lt;axe 3&gt;. Lance trois sous-agents Explore (lecture seule), un par axe, en même temps.
+
+Brief de chaque sous-agent :
+- Objectif : les 3 problèmes les plus importants sur ton axe, classés par impact.
+- Sortie : pour chaque problème, le constat, l'impact, fichier:ligne et la correction proposée.
+- Limites : reste dans &lt;module&gt; et sur ton axe ; ne modifie rien ; ne lance pas d'agent.
+- Cite un chemin pour chaque affirmation ; marque NON VÉRIFIÉ ce que tu n'as pas vérifié.
+
+Attends les trois rapports. Écris-les dans .scratch/audit-&lt;nom&gt;/&lt;axe&gt;.md, puis fais la synthèse dans .scratch/audit-&lt;nom&gt;/roadmap.md : doublons fusionnés, les trois premières actions. Vérifie toi-même une affirmation de chaque rapport en ouvrant le fichier cité, et dis laquelle.
+</code></pre></div>
+<p>Sur votre projet : votre module, vos axes ; la sécurité, l'observabilité ou la performance sont des axes possibles. Fini en avance ? Vérifiez une deuxième affirmation, ou ajoutez un quatrième axe : performance.</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Le verdict de ma loop, et sa raison</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Le module et les axes que j'audite</td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>L'affirmation de la roadmap que j'ai vérifiée : vraie ou fausse ?</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="etape-5-classer-vos-tentations-15-min">Étape 5 : classer vos tentations (15 min)</h3>
+<p>La grille des tentations, juste après l'atelier : une ligne par tentation. Entourez la correction la plus utile : elle ira dans la ligne 4 de votre plan d'adoption. Les cinq dernières minutes, on range : <code>/exit</code> dans chaque session (« Keep » si Claude Code demande s'il faut garder un worktree dont la branche n'est pas fusionnée), <code>npx astro dev stop</code> là où tourne un serveur de dev, et <code>git worktree list</code> pour voir ce qui reste. Le terminal 3 reste ouvert, à la racine : l'exercice MCP s'y fait.</p>
+<h3 id="le-repli-l-analyse-parallele-des-l-etape-1">Le repli : l'analyse parallèle, dès l'étape 1</h3>
+<p>Sur votre projet, un ticket qui ne se découpe pas, ou pas de tests sur la zone : faites l'analyse parallèle de l'étape 4 dès l'étape 1, sur votre repo, en changeant le module et les axes. À l'étape 4, ajoutez un quatrième axe, ou vérifiez deux affirmations. Sur Tailspin, le repli, c'est le découpage de secours de la 07 : 01 une catégorie, de bout en bout ; 02 l'éditeur et 03 plusieurs catégories, en parallèle ; 04 la combinaison (branches <code>secours/*</code> du fork).</p>
+<h3 id="si-ca-coince-3">Si ça coince</h3>
+<ul>
+<li><code>claude -w</code> refuse : pas de dépôt git, ou dossier jamais approuvé. Lancez <code>claude</code> une fois à la racine du repo et acceptez le dialogue de confiance (son curseur est sur « No, exit »).</li>
+<li>Le worktree ne voit pas vos tickets : ils n'étaient pas committés ; ou, sur votre projet, <code>baseRef</code> manque. Reprenez la préparation.</li>
+<li>Dépendances : dans Tailspin, rien à installer dans un worktree de <code>claude -w</code>, il trouve le <code>node_modules</code> du checkout principal ; <code>npm ci</code> seulement si le ticket ajoute une dépendance.</li>
+<li>Une demande de permission pour <code>npm run build</code> : il n'est pas dans les commandes autorisées de Tailspin. En Auto, il passe ; ailleurs, acceptez.</li>
+<li>Le pipeline rend la main avec deux options à trancher : c'est le harness qui remonte quelque chose. Tranchez, puis relancez.</li>
+<li>Une session veut lancer Playwright : le CLAUDE.md de Tailspin l'écarte, faute de navigateur de test. Une tentation à noter.</li>
+<li><code>/implement</code> annonce une revue qui ne trouve rien, ou relit un ticket précédent : son <code>/code-review</code> ne voit que ce qui est committé. Faites committer, puis relancez <code>/mattpocock-skills:code-review</code>. Tentation à classer : harness.</li>
+<li><code>/goal</code> répond « atteint » dès le premier tour alors que le ticket n'est pas fini : la condition était vraie sans le travail du ticket. C'est un trou de harness, pas une erreur de l'agent : la condition doit nommer le nouveau test ou le critère du ticket.</li>
+<li><code>git merge</code> ouvre un éditeur (Vim, souvent) : <code>:wq</code>, puis Entrée. C'est ce que <code>--no-edit</code> évite.</li>
+<li>Deux sessions veulent le même port : Astro prend le port libre suivant ; <code>npx astro dev stop</code> arrête un serveur. Sur un projet .NET avec des tests d'intégration sur une base locale : en parallèle, seulement les tests unitaires.</li>
+<li>Limites d'usage atteintes : chaque session et chaque sous-agent dépensent leurs propres tokens. Deux sessions au plus, pas quatre : le pipeline lance déjà deux sous-agents par ticket, dont un relecteur sur Opus.</li>
+<li>La liste de <code>/tasks</code> s'allonge, des sous-agents en lancent d'autres (souvent pendant le <code>/code-review</code> de <code>/implement</code>) : c'est la cascade. Intervenez : <code>Ctrl+X Ctrl+K</code>, deux fois en trois secondes, arrête les sous-agents en arrière-plan (Échap seul ne les arrête pas), puis notez la tentation : un trou de harness, le brief n'interdisait pas de lancer des agents.</li>
+<li>Le pipeline part en agent team au lieu de sous-agents : <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS</code> est à 1 ; remettez-la à 0 et relancez la session.</li>
+<li>Vous avez tapé <code>/model sonnet</code> au lieu de l'option <code>--model</code> : ça marche, mais c'est devenu le défaut de vos sessions suivantes. Repassez sur Opus avant de concevoir votre prochain ticket.</li>
+<li>Vous préférez <code>/implement</code> pour le ticket débloqué : marquez d'abord ses bloqueurs comme fermés (leur ligne <code>Status:</code> dans <code>.scratch/</code>), committés sur la branche de travail, puis <code>claude -w</code>.</li>
+</ul>
+<h2 id="la-grille-des-tentations">La grille des tentations</h2>
+<p>Pour chaque tentation d'intervenir : la tentation, ce qui a cloché (entourez la classe), ce que vous corrigez. Pour chaque ligne, posez-vous la question : « Qu'est-ce qui aurait empêché l'erreur ? » S'il y a une réponse, ce n'est pas une erreur d'agent.</p>
+<div class="tableau c3"><table class="a-remplir">
+<thead>
+<tr>
+<th>Ma tentation</th>
+<th>Ce qui a cloché</th>
+<th>Ce que je corrige</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Exemple : « Le relancer : il a modifié un test »</em></td>
+<td><em>harness</em></td>
+<td><em>« aucun test n'est modifié » dans la condition, ou un hook</em></td>
+</tr>
+<tr>
+<td><em>Exemple : « Lui expliquer le format de date attendu »</em></td>
+<td><em>spec</em></td>
+<td><em>une ligne dans la spec, puis relancer</em></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="insecable">harness · spec · code · agent</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="insecable">harness · spec · code · agent</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="insecable">harness · spec · code · agent</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="insecable">harness · spec · code · agent</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="insecable">harness · spec · code · agent</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td class="ecrire l2"></td>
+<td class="insecable">harness · spec · code · agent</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Les quatre classes, celles de « Quand vous rentrez dans la boucle » : <strong>harness</strong> (une vérification manquait) · <strong>spec</strong> (elle avait un trou) · <strong>code</strong> (il résiste : module trop couplé, pas de point d'entrée testable) · <strong>agent</strong> (une vraie erreur de l'agent : relancer, découper plus fin). On se classe trop vite en « erreur d'agent », parce que c'est la seule classe qui ne demande rien de nous.</p>
+<p>On corrige la cause, pas la sortie. Sur une tâche unique, corriger la sortie est légitime ; corriger la cause ne paie que sur ce qui se répète.</p>
+<div class="tableau c1"><table class="a-remplir deux-zones">
+<thead>
+<tr>
+<th>La correction la plus utile, pour la ligne 4 du plan d'adoption</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="exercice-un-serveur-mcp-et-le-sous-agent-qui-s-en-sert-45-min">Exercice : un serveur MCP, et le sous-agent qui s'en sert (45 min)</h2>
+<p>Quatre étapes, au même rythme que l'atelier, dans le troisième terminal, à la racine du projet, pas dans un worktree. Sur votre projet : un serveur en lecture seule sur une donnée simple (un fichier de données, une table de dev en lecture, une API locale), en adaptant le prompt ; le SDK officiel existe aussi en C# et en Java. Rien de simple à brancher : l'exercice sur Tailspin.</p>
+<h3 id="dans-l-app-desktop-onglet-code">Dans l'app desktop (onglet Code)</h3>
+<ul>
+<li><strong>La session</strong> : <em>Local</em>, sur le dossier de Tailspin, <strong>sans</strong> l'option worktree ; Sonnet dans le menu du modèle, à côté du bouton d'envoi. La branche : <code>git switch -c mcp-catalogue</code> dans le terminal intégré (<code>Ctrl+`</code>).</li>
+<li><strong>Avant l'étape 1</strong>, demandez à Claude : « Lance npx tsx --version. » S'il ne trouve pas <code>npx</code> : ajoutez le dossier de Node au <code>Path</code> de votre compte (menu Démarrer, « Modifier les variables d'environnement pour votre compte »), puis quittez et relancez l'app.</li>
+<li><strong>Étape 2</strong> : la commande <code>claude</code> n'existe pas hors de l'app. Demandez à la place : « Enregistre ce serveur pour le projet dans .mcp.json, à la racine : nom tailspin, commande npx, arguments tsx et mcp/catalog-server.ts. » Puis une nouvelle session (Ctrl+N), sur le même dossier, <em>Local</em>, sans worktree. Si un dialogue demande d'approuver le serveur, choisissez de l'utiliser. Le contrôle : « Quels outils du serveur tailspin vois-tu ? » ; il doit citer <code>search_games</code> et <code>get_game</code>.</li>
+<li><strong>Étape 3</strong> : Ctrl+O fait défiler les vues ; la vue <em>Verbose</em> montre chaque appel d'outil.</li>
+<li><strong>Étape 4</strong> : Ctrl+N, sur le même dossier, au lieu de <code>/exit</code> et de la relance.</li>
+</ul>
+<h3 id="etape-1-faites-le-ecrire-14-min">Étape 1 : faites-le écrire (14 min)</h3>
+<p>Sur une branche neuve (<code>git switch -c mcp-catalogue</code>) : <code>claude --model sonnet</code>, puis :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">Écris un serveur MCP en stdio pour le catalogue, dans
+mcp/catalog-server.ts, avec le SDK officiel v2
+(@modelcontextprotocol/server, et zod). Deux outils en lecture
+seule, qui réutilisent src/lib/ : search_games (un texte, cherché
+dans le titre, la catégorie et l'éditeur) et get_game (par id).
+La logique va dans src/lib/, testée par Vitest ; le serveur ne
+fait que l'exposer. Ne lance pas d'agent.
+</code></pre></div>
+<p>Puis <strong>lisez le serveur</strong> : la description de chaque outil (c'est elle qui décide quand Claude l'appelle), et où partent ses messages d'erreur (stdout porte le protocole : un <code>console.log</code> casse le serveur). Fini en avance ? Lisez les tests : que prouvent-ils, et que ne prouvent-ils pas ?</p>
+<h3 id="etape-2-branchez-le-7-min">Étape 2 : branchez-le (7 min)</h3>
+<p>Dans Claude, <code>/exit</code> ; puis, dans le terminal :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">claude mcp add --scope project tailspin -- npx tsx mcp/catalog-server.ts
+claude --model sonnet
+</code></pre></div>
+<ul>
+<li>Au lancement, « New MCP server found in this project » : le curseur est sur « Continue without… » ; choisissez <strong>Use this MCP server</strong>.</li>
+<li>Dans la session, <code>/mcp</code> : <strong>✔ tailspin · 2 tools</strong> ; puis <em>View tools</em> : <code>search_games</code> et <code>get_game</code>, <em>read-only</em>.</li>
+</ul>
+<p>Fini en avance ? <code>/context</code> : la ligne « MCP tools ».</p>
+<h3 id="etape-3-servez-vous-en-9-min">Étape 3 : servez-vous-en (9 min)</h3>
+<ol>
+<li>Demandez : « Quel est le jeu le mieux noté de chaque catégorie ? »</li>
+<li><strong>Ctrl+O : par où est-il passé ?</strong> Un appel à <code>tailspin</code>, ou autre chose ?</li>
+<li>Puis : « Même question, en passant uniquement par les outils du serveur tailspin. »</li>
+<li>Et hors catalogue : « Combien a levé Repo Rulers ? »</li>
+</ol>
+<p>Fini en avance ? Une demande vague : « Un jeu pour ce soir ? » Que fait-il, sans consigne ?</p>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>À la première question, par où est-il passé ?</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Hors catalogue : a-t-il dit qu'il ne savait pas, ou avancé un chiffre ?</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="etape-4-confiez-le-a-un-sous-agent-15-min">Étape 4 : confiez-le à un sous-agent (15 min)</h3>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">Crée le sous-agent concierge, dans .claude/agents/concierge.md :
+il répond aux questions sur le catalogue en suivant les règles de
+backlog/09-backer-concierge.md, sur Haiku, avec pour seuls outils
+ceux du serveur tailspin. Déclare ce serveur dans son en-tête, en
+ligne, avec la même commande que dans .mcp.json, puis retire-le
+de .mcp.json : la conversation principale ne doit plus le voir.
+Ne lance pas d'agent.
+</code></pre></div>
+<ol>
+<li>Relisez son en-tête : <code>model</code>, <code>tools</code>, <code>mcpServers</code>.</li>
+<li><code>/exit</code>, puis <code>claude --model sonnet</code> : un dossier <code>agents</code> neuf se charge au démarrage.</li>
+<li>« Demande au concierge : quel jeu de stratégie est le mieux noté, et combien a-t-il levé ? »</li>
+</ol>
+<p>Fini en avance ? <code>/context</code> : plus d'outil tailspin dans la conversation. Puis une demande vague au concierge : il doit poser une seule question.</p>
+<h3 id="si-ca-coince-4">Si ça coince</h3>
+<ul>
+<li>Claude prend l'ancien SDK, <code>@modelcontextprotocol/sdk</code> : ça marche aussi, seuls les imports changent ; ne recommencez pas.</li>
+<li><code>tailspin.db</code> absent : <code>npm run db:setup</code> dans le checkout principal.</li>
+<li>Le serveur lancé à la main ne rend pas la main : c'est normal, il attend un client sur stdin. Ctrl+C.</li>
+<li>« Pending approval », ou « Continue without » choisi par réflexe : <code>claude mcp reset-project-choices</code>, puis relancez <code>claude</code> et choisissez « Use this MCP server ».</li>
+<li>« ✘ Failed to connect » : lancez <code>claude</code> à la racine (le chemin du serveur est relatif) ; lancez <code>npx tsx mcp/catalog-server.ts</code> à la main pour voir l'erreur ; puis <code>/mcp</code>, Reconnect.</li>
+<li>Windows, « Connection closed » : <code>claude mcp remove tailspin -s project</code>, puis le même <code>claude mcp add</code> avec <code>cmd /c</code> avant <code>npx</code>.</li>
+<li>Windows, le concierge part sans outils alors que l'étape 2 a demandé <code>cmd /c</code> : son en-tête doit le reprendre ; demandez-le à Claude.</li>
+<li>App desktop, le serveur ou le concierge ne se charge pas : une nouvelle session (Ctrl+N), <em>Local</em>, sur la racine du projet, sans worktree. Une session en worktree lit <code>.mcp.json</code> et <code>.claude/agents/</code> à la racine du checkout principal ; une session <em>Cloud</em> ne lance pas de serveur local.</li>
+<li>Claude n'appelle pas le serveur : c'est la leçon de l'étape 3, il a un chemin plus court ; « en passant uniquement par les outils du serveur tailspin ».</li>
+<li>Hors du mode Auto, Claude demande l'accord pour chaque outil MCP : <code>mcp__tailspin__*</code> dans <code>permissions.allow</code> lève la question pour ce serveur.</li>
+<li>« 'concierge' would be spawned with zero tools — refusing » : son serveur ne s'est pas chargé. La session n'a pas été relancée après la création de <code>.claude/agents/</code>, ou le dossier n'est pas de confiance (<code>claude</code> une fois, acceptez).</li>
+<li>Le concierge n'est pas appelé : nommez-le, « Demande au concierge ».</li>
+<li>La session principale voit encore les outils tailspin : <code>.mcp.json</code> pas vidé, ou session pas relancée.</li>
+</ul>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th>Question</th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dans ma mission, l'outil que je brancherais en premier</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Une CLI que Claude connaît déjà, un serveur publié par l'éditeur, ou le mien ? Qui doit l'autoriser chez le client ?</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+</section>
+<section class="partie">
+<h1 id="plan-d-adoption-a-30-jours">Plan d'adoption à 30 jours</h1>
+<p>Un plan pour votre équipe, construit ligne par ligne : une ligne à la fin de chaque demi-journée, puis la consolidation en clôture du J2. Si la politique IA de votre entreprise est en cours de définition, ce plan peut la nourrir.</p>
+<h2 id="ligne-1-fin-du-j1-matin-le-contexte">Ligne 1 · fin du J1 matin : le contexte</h2>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dès lundi, dans le CLAUDE.md de mon équipe, je change</td>
+<td class="ecrire l3"></td>
+</tr>
+<tr>
+<td>Je propose d'ajouter la règle</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="ligne-2-fin-du-j1-apres-midi-hooks-et-skills">Ligne 2 · fin du J1 après-midi : hooks et skills</h2>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Le hook que je mets en place dans mon équipe</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Le skill que je partage</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="ligne-3-fin-du-j2-matin-composer-et-piloter">Ligne 3 · fin du J2 matin : composer et piloter</h2>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ce que je mets en place dans mon équipe pour composer et piloter</td>
+<td class="ecrire l3"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Exemples : <em>« une chaîne interview → spec → tickets sur notre prochain ticket »</em> ; <em>« une condition <code>/goal</code> écrite pour chaque tâche longue »</em>. D'autres pistes : le skill « à créer » de votre plan de composition ; la grille « quand vous rentrez dans la boucle » en revue de PR ; garder les specs dans le repo, à côté du code ; « toute fonctionnalité de plus d'une demi-journée passe par une spec écrite », une ligne de politique IA concrète.</p>
+<h2 id="ligne-4-fin-du-j2-apres-midi-paralleliser">Ligne 4 · fin du J2 après-midi : paralléliser</h2>
+<div class="tableau c2"><table class="a-remplir fiche">
+<thead>
+<tr>
+<th></th>
+<th>Votre réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La correction de harness que je fais lundi (celle que j'ai entourée dans la grille des tentations)</td>
+<td class="ecrire l2"></td>
+</tr>
+<tr>
+<td>Ma première parallélisation, à deux sessions</td>
+<td class="ecrire l2"></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="consolidation-en-cloture-du-j2">Consolidation · en clôture du J2</h2>
+<p>Regroupez vos lignes 1 à 4 en un plan de quatre semaines. Un ticket de votre mission par ligne : aujourd'hui, vous avez travaillé sur Tailspin ou sur votre projet ; lundi, c'est chez le client. Notez le ticket ou le sujet réel où la pratique s'applique en premier. Un résultat mesurable par ligne : pas « utiliser les skills », mais « le skill de revue se déclenche sans être nommé sur nos trois prochaines PR ». Un responsable par ligne : une ligne sans nom n'est faite par personne. Un plan qui tient en quatre lignes est un plan qu'on fait. Les exemples en italique donnent le niveau de précision attendu.</p>
+<div class="tableau c5"><table class="a-remplir">
+<thead>
+<tr>
+<th>Semaine</th>
+<th>Ce que je mets en place</th>
+<th>Sur quel ticket de ma mission</th>
+<th>Comment je sais que ça marche</th>
+<th>Qui</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Semaine 1</td>
+<td><em>Exemple : le CLAUDE.md et la règle du J1, commités, relus par l'équipe</em></td>
+<td><em>Exemple : le repo de la mission</em></td>
+<td><em>Exemple : la PR est relue et mergée</em></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td class="ecrire l3"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Semaine 2</td>
+<td><em>Exemple : un hook et un skill partagés</em></td>
+<td><em>Exemple : le prochain ticket qui touche une migration</em></td>
+<td><em>Exemple : le skill se déclenche sans être nommé</em></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td class="ecrire l3"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+</tr>
+<tr>
+<td>Semaines 3–4</td>
+<td><em>Exemple : une chaîne interview → spec → tickets, et une première parallélisation à deux sessions</em></td>
+<td><em>Exemple : le prochain ticket d'une demi-journée</em></td>
+<td><em>Exemple : le temps de relecture par PR</em></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td class="ecrire l3"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l2"></td>
+<td class="ecrire l1"></td>
+</tr>
+</tbody>
+</table></div>
+<p>Pour la colonne « Comment je sais que ça marche », voyez la slide « Mesurer sans se tromper » ; le détail est dans le récap (« Mesurer les résultats, pas l'activité »). Relisez la checklist context engineering : elle montre ce que vous avez oublié dans votre plan.</p>
+</section>
+<section class="partie">
+<h1 id="checklist-context-engineering">Checklist context engineering</h1>
+<p>À cocher dans les semaines qui viennent. C'est le livrable 5 du programme ; relisez-la en écrivant votre plan d'adoption : elle montre ce que vous avez oublié.</p>
+<h2 id="partie-j1-le-contexte-le-claude-md-les-hooks-et-les-skills">Partie J1 : le contexte, le CLAUDE.md, les hooks et les skills</h2>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Je commence toute première session sur un repo en Plan mode.</li>
+<li class="tache"><span class="case"></span>Je tape <code>/context</code> avant une grosse tâche, et quand Claude semble oublier une consigne.</li>
+<li class="tache"><span class="case"></span>J'ai réglé l'auto-compaction vers 70 % de la fenêtre (<code>/autocompact 700k</code> sur une fenêtre de 1M).</li>
+<li class="tache"><span class="case"></span>Je fais <code>/clear</code> entre deux tâches sans rapport.</li>
+<li class="tache"><span class="case"></span>Je compacte avec une consigne (<code>/compact garde …</code>), pas à l'aveugle.</li>
+<li class="tache"><span class="case"></span>Quand Claude part dans une mauvaise direction, je reviens en arrière (Esc Esc) au lieu de corriger par-dessus.</li>
+<li class="tache"><span class="case"></span>Mes prompts référencent les fichiers (<code>@chemin</code>), montrent un modèle, posent les limites et donnent un critère de vérification.</li>
+<li class="tache"><span class="case"></span>Pas de tests sur la zone ? Je demande d'abord le test.</li>
+<li class="tache"><span class="case"></span>Mon CLAUDE.md fait moins de 200 lignes et ne contient que ce que Claude ne peut pas deviner.</li>
+<li class="tache"><span class="case"></span>Il désigne des fichiers modèles (golden files) au lieu d'énumérer des règles de style.</li>
+<li class="tache"><span class="case"></span>Les consignes propres à une partie du code sont dans <code>.claude/rules/</code>, avec <code>paths</code>.</li>
+<li class="tache"><span class="case"></span>Une erreur qui revient devient une règle ; une procédure qui revient devient un skill.</li>
+<li class="tache"><span class="case"></span>Ce qui doit arriver à chaque fois (formatage, protection des secrets, tests) est dans un hook, pas dans le CLAUDE.md.</li>
+<li class="tache"><span class="case"></span>Mes secrets sont protégés par une règle <code>deny</code> et un hook <code>PreToolUse</code>, et je sais ce qu'ils ne couvrent pas : le sandbox, lui, bloque les commandes shell quel que soit leur texte.</li>
+<li class="tache"><span class="case"></span>Je vérifie dans <code>/context</code> le poids de mes serveurs MCP et de mes skills, et je débranche ce qui ne sert pas.</li>
+</ul>
+<h2 id="partie-j2-workflows-loops-parallelisation">Partie J2 : workflows, loops, parallélisation</h2>
+<ul class="taches">
+<li class="tache"><span class="case"></span>Je dose : si le diff tient en une phrase, pas de plan ; le Plan mode quand l'approche est incertaine ; l'interview et la spec pour un ticket d'une demi-journée et plus.</li>
+<li class="tache"><span class="case"></span>Pour une grosse fonctionnalité, je me fais interviewer, la spec va dans un fichier, et je l'exécute dans une nouvelle session.</li>
+<li class="tache"><span class="case"></span>À la fin de l'interview, je tape <code>/to-spec</code> au lieu de répondre « oui, vas-y ».</li>
+<li class="tache"><span class="case"></span>Mes tickets sont des tranches verticales, vérifiables seules, avec leur ligne « Blocked by » ; jamais un découpage par couche.</li>
+<li class="tache"><span class="case"></span>Mon workflow laisse des fichiers courts (spec, tickets, plan) ; chaque implémentation repart de ces fichiers, en contexte frais.</li>
+<li class="tache"><span class="case"></span>Je compose mes skills plutôt que d'adopter une méthode en bloc ; j'emprunte aux méthodes leurs bonnes idées.</li>
+<li class="tache"><span class="case"></span>Je choisis mon niveau de supervision tâche par tâche : in the loop pour la conception et ce qui est risqué, on the loop pour un ticket bien spécifié et testé.</li>
+<li class="tache"><span class="case"></span>Quand j'interviens, je corrige la cause (le harness, la spec ou le code) plutôt que la sortie.</li>
+<li class="tache"><span class="case"></span>Mes conditions <code>/goal</code> ont un état final mesurable, une vérification énoncée, les contraintes qui comptent et un plafond de tours, tous visibles dans la sortie de Claude.</li>
+<li class="tache"><span class="case"></span>Une loop qui corrige du code n'a pas le droit de modifier les tests qui la jugent.</li>
+<li class="tache"><span class="case"></span>Une loop sans surveillance tourne sur une branche, en mode Auto, après un run pilote sur un petit périmètre ; je surveille les tokens dans le statut de <code>/goal</code> (et, en non interactif, je plafonne la dépense avec <code>--max-budget-usd</code>), et je fixe toujours <code>--max-iterations</code> avec <code>ralph-loop</code>.</li>
+<li class="tache"><span class="case"></span>Un worktree par agent qui écrit du code : jamais deux sessions dans le même dossier.</li>
+<li class="tache"><span class="case"></span>Mes worktrees sont prêts à l'emploi : <code>.claude/worktrees/</code> dans le <code>.gitignore</code>, <code>.worktreeinclude</code> pour les fichiers ignorés, un script d'amorçage versionné pour les dépendances.</li>
+<li class="tache"><span class="case"></span>Je délègue à un sous-agent ce qui produit une sortie volumineuse (recherche, logs, tests), avec un brief : objectif, format de sortie, consignes sur les outils et les sources, limites.</li>
+<li class="tache"><span class="case"></span>Le rapport d'un sous-agent est une hypothèse : je vérifie ses citations avant d'agir.</li>
+<li class="tache"><span class="case"></span>Le brief d'un sous-agent lui interdit de lancer des agents.</li>
+<li class="tache"><span class="case"></span>Avant de brancher un serveur MCP, je vérifie qu'une CLI et un skill ne suffisent pas ; je l'approuve comme une dépendance, et je le confie à un sous-agent quand une interface étroite suffit.</li>
+<li class="tache"><span class="case"></span>Je choisis le modèle selon la phase : Opus pour concevoir et relire, Sonnet pour implémenter.</li>
+<li class="tache"><span class="case"></span>Le graphe des tickets décide de ce qui part en parallèle ; je commence à deux sessions, et j'en ajoute seulement si ma relecture et mon attention suivent.</li>
+<li class="tache"><span class="case"></span>Je mesure des résultats (temps de relecture par PR, changements mergés du premier coup, retours sur la spec), pas l'activité.</li>
+</ul>
+</section>
+<section class="partie">
+<h1 id="auto-evaluation-les-6-objectifs">Auto-évaluation : les 6 objectifs</h1>
+<p>En clôture du J2 : pour chaque objectif du programme, cochez où vous en êtes. <strong>1</strong> = je ne saurais pas le refaire seul ; <strong>2</strong> = je le refais avec le livret ouvert ; <strong>3</strong> = je le refais seul, sans le livret ; <strong>4</strong> = je peux le montrer à mon équipe.</p>
+<div class="tableau c5"><table class="a-remplir">
+<thead>
+<tr>
+<th>Objectif du programme</th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th>Où le livret le reprend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Piloter la fenêtre de contexte</td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td>J1 matin — Récap : « Piloter la fenêtre de contexte », « La règle des 70 % », « Les 4 modes de défaillance »</td>
+</tr>
+<tr>
+<td>2. Rédiger des prompts précis</td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td>J1 matin — Récap : « Un prompt précis : quatre verbes » ; J1 matin — Cahier : « Exercice express : réécrire un prompt »</td>
+</tr>
+<tr>
+<td>3. Configurer son harness : CLAUDE.md, règles, hooks</td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td>J1 matin : « CLAUDE.md, le README des agents » et l'Atelier 1 ; J1 après-midi : « Les hooks : du conseil à la garantie » et l'exercice <code>.env</code></td>
+</tr>
+<tr>
+<td>4. Concevoir des skills composables</td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td>J1 après-midi : « Les skills : du savoir ou des procédures, à la demande », « Partager un skill » et « Exercice : créer votre skill » ; J2 matin — Récap : « La chaîne de Matt Pocock »</td>
+</tr>
+<tr>
+<td>5. Composer des workflows spec-driven et choisir son niveau de supervision</td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td>J2 matin — Récap : la spec, la chaîne, doser, superviser, les loops ; J2 matin — Cahier : l'Atelier 2, le plan de composition, « <code>/goal</code> à blanc », la condition d'arrêt</td>
+</tr>
+<tr>
+<td>6. Paralléliser avec worktrees et sous-agents</td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td class="coche" style="text-align: center;"><span class="case"></span></td>
+<td>J2 après-midi — Récap : worktrees, sous-agents, le prompt du pipeline ; J2 après-midi — Cahier : la préparation des worktrees, l'Atelier 3 et ses deux prompts, le sous-agent concierge de l'exercice MCP</td>
+</tr>
+</tbody>
+</table></div>
+<p>Un objectif à 1 ou 2 : reprenez la partie indiquée. Pour le 6, refaites l'Atelier 3 au calme, sur un ticket de la semaine suivante, avec le prompt du pipeline.</p></section>
+<footer class="pied">Context Engineering, skills &amp; workflows · 5 Degrés · Cahier, version du 16 octobre 2026 · Claude Code 2.1.296</footer>
+</main>
+</div>
+<a class="vers-sommaire" href="#sommaire" hidden>↑ Sommaire</a>
+<script>
+(() => {
+  "use strict";
+  // Bouton Copier ; une condition /goal se copie sur une seule ligne.
+  const signaler = (bouton, message) => {
+    const initial = bouton.dataset.initial || bouton.textContent;
+    bouton.dataset.initial = initial;
+    bouton.textContent = message;
+    bouton.classList.add("fait");
+    clearTimeout(bouton._minuteur);
+    bouton._minuteur = setTimeout(() => { bouton.textContent = initial; bouton.classList.remove("fait"); }, 2200);
+  };
+  const selectionner = (pre, bouton) => {
+    const plage = document.createRange();
+    plage.selectNodeContents(pre);
+    const s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(plage);
+    signaler(bouton, "Sélectionné : Ctrl+C");
+  };
+  document.addEventListener("click", (e) => {
+    const bouton = e.target.closest("button.copier");
+    if (!bouton) return;
+    const pre = bouton.closest(".code").querySelector("pre");
+    let texte = pre.textContent.replace(/\s+$/, "");
+    if (bouton.hasAttribute("data-une-ligne")) {
+      texte = texte.split("\n").map((l) => l.trim()).filter(Boolean).join(" ");
+    }
+    try {
+      navigator.clipboard.writeText(texte).then(() => signaler(bouton, "Copié ✓"), () => selectionner(pre, bouton));
+    } catch {
+      selectionner(pre, bouton);
+    }
+  });
+
+  // Sommaire latéral : la partie lue est ouverte et surlignée.
+  const nav = document.querySelector(".toc");
+  const liens = new Map();
+  for (const a of nav.querySelectorAll('a[href^="#"]')) liens.set(a.getAttribute("href").slice(1), a);
+  const titres = [...document.querySelectorAll(".livret h1[id], .livret h2[id]")].filter((h) => liens.has(h.id));
+  const premierePartie = document.querySelector(".livret section.partie");
+  const retour = document.querySelector(".vers-sommaire");
+  let courant;
+  const maj = () => {
+    if (retour) retour.hidden = !premierePartie || premierePartie.getBoundingClientRect().top > 0;
+    let actif = null;
+    for (const h of titres) {
+      if (h.getBoundingClientRect().top <= 140) actif = h; else break;
+    }
+    if (actif === courant) return;
+    courant = actif;
+    for (const a of nav.querySelectorAll("[aria-current]")) a.removeAttribute("aria-current");
+    for (const li of nav.querySelectorAll(".partie.ouverte")) li.classList.remove("ouverte");
+    if (!actif) return;
+    const lien = liens.get(actif.id);
+    lien.setAttribute("aria-current", "true");
+    const partie = lien.closest(".partie");
+    if (partie) partie.classList.add("ouverte");
+    if (getComputedStyle(nav).display !== "none") {
+      const r = lien.getBoundingClientRect(), n = nav.getBoundingClientRect();
+      if (r.top < n.top + 8 || r.bottom > n.bottom - 8) nav.scrollTop += r.top - n.top - n.height / 3;
+    }
+  };
+  let enAttente = false;
+  addEventListener("scroll", () => {
+    if (enAttente) return;
+    enAttente = true;
+    requestAnimationFrame(() => { enAttente = false; maj(); });
+  }, { passive: true });
+  addEventListener("resize", () => { courant = undefined; maj(); });
+  maj();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Démarrer le J2 · Context Engineering, skills &amp; workflows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+:root {
+  --bg: #fffaf3;
+  --fg: #26233a;
+  --fg-doux: #575279;
+  --discret: #6e6a8a;
+  --titre-fort: #b4637a;
+  --titre: #a8566f;
+  --sous-titre: #a8566f;
+  --accent: #ea9d34;
+  --accent-texte: #95590c;
+  --lien: #286983;
+  --code-fond: #f2e9e1;
+  --encart-fond: #f4ede8;
+  --trait: #e4dfdc;
+  --ligne: #cfc9c6;
+  --bouton-fond: #fffaf3;
+  --bouton-bord: #dcd3ca;
+  --ombre: rgba(38, 35, 58, 0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #232136; --fg: #e0def4; --fg-doux: #bcb8d8; --discret: #908caa;
+    --titre-fort: #ea9a97; --titre: #ea9a97; --sous-titre: #f6c177;
+    --accent: #f6c177; --accent-texte: #f6c177; --lien: #9ccfd8;
+    --code-fond: #2a273f; --encart-fond: #2a283e; --trait: #393552; --ligne: #44415a;
+    --bouton-fond: #232136; --bouton-bord: #44415a; --ombre: rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #232136; --fg: #e0def4; --fg-doux: #bcb8d8; --discret: #908caa;
+  --titre-fort: #ea9a97; --titre: #ea9a97; --sous-titre: #f6c177;
+  --accent: #f6c177; --accent-texte: #f6c177; --lien: #9ccfd8;
+  --code-fond: #2a273f; --encart-fond: #2a283e; --trait: #393552; --ligne: #44415a;
+  --bouton-fond: #232136; --bouton-bord: #44415a; --ombre: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: no-preference) { :root { scroll-behavior: smooth; } }
+
+body { margin: 0; background: var(--bg); color: var(--fg); }
+
+.page {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px; line-height: 1.62;
+  font-feature-settings: "cv05" 1, "cv08" 1;
+  max-width: 68rem; margin: 0 auto;
+  padding-inline: 16px; padding-block: 2.5rem 6rem;
+  display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 3rem;
+}
+.livret { min-width: 0; width: 100%; max-width: 46rem; margin-inline: auto; }
+.toc { display: none; }
+@media (min-width: 1120px) {
+  .page { grid-template-columns: 15rem minmax(0, 46rem); justify-content: center; padding-inline: 2rem; }
+  .livret { margin-inline: 0; }
+  .toc {
+    display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1.5rem);
+    align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto;
+    overscroll-behavior: contain; padding: 0 0.75rem 1rem 0; border-right: 1px solid var(--trait);
+  }
+}
+
+/* Sommaire latéral */
+.toc { font-size: 0.86rem; line-height: 1.4; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc a { display: block; padding: 0.24rem 0.6rem; color: var(--fg-doux); text-decoration: none;
+  border-left: 2px solid transparent; border-radius: 0 5px 5px 0; }
+.toc a:hover { color: var(--fg); background: var(--encart-fond); }
+.toc-titre { margin: 0 0 1rem; font-weight: 700; line-height: 1.3; }
+.toc-titre a { color: var(--titre-fort); padding-left: 0.6rem; }
+.toc-pdf { margin: -0.4rem 0 0.3rem; padding-left: 0.6rem; color: var(--fg-doux); }
+.toc-pdf a { display: inline; padding: 0; border: 0; color: var(--lien); font-weight: 500; }
+.toc-retour { margin: 0 0 1rem; }
+.toc-retour a { color: var(--lien); font-weight: 500; }
+.toc-groupe { margin: 1.25rem 0 0.35rem; padding-left: 0.6rem; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-texte); }
+.toc .partie > a { font-weight: 600; color: var(--fg); }
+.toc .partie > ol { display: none; margin: 0.1rem 0 0.45rem 0.7rem; }
+.toc .partie > ol a { font-size: 0.83rem; }
+.toc .partie.ouverte > ol { display: block; }
+.toc a[aria-current="true"] { color: var(--titre); border-left-color: var(--accent); background: var(--encart-fond); }
+
+/* Texte */
+.livret h1, .livret h2, .livret h3 { scroll-margin-top: 1.25rem; text-wrap: balance; }
+.livret h1 { font-size: clamp(1.6rem, 1.25rem + 1.3vw, 2.1rem); font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.015em; color: var(--titre-fort); margin: 0 0 1.4rem; padding-bottom: 0.65rem;
+  border-bottom: 3px solid var(--accent); }
+.livret h2 { font-size: 1.38rem; font-weight: 700; line-height: 1.3; color: var(--titre); margin: 2.8rem 0 0.8rem; }
+.livret h3 { font-size: 1.1rem; font-weight: 600; line-height: 1.35; color: var(--sous-titre); margin: 2rem 0 0.6rem; }
+.livret p { margin: 0 0 1rem; }
+.livret section > p, .livret section > ul, .livret section > ol, .livret section > blockquote { max-width: 39rem; }
+.livret strong { font-weight: 600; }
+.livret em { color: var(--fg-doux); }
+.livret a { color: var(--lien); text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em; overflow-wrap: anywhere; }
+.livret a:hover { text-decoration-thickness: 2px; }
+.livret ul, .livret ol { margin: 0 0 1.1rem; padding-left: 1.4rem; }
+.livret li { margin: 0.32rem 0; }
+.livret ul > li::marker { color: var(--accent); }
+.livret ol > li::marker { color: var(--accent-texte); font-weight: 600; }
+.livret blockquote { margin: 1.2rem 0 1.5rem; padding: 0.85rem 1.1rem; border-left: 3px solid var(--accent);
+  background: var(--encart-fond); border-radius: 0 8px 8px 0; }
+.livret blockquote p:last-child { margin-bottom: 0; }
+.livret code { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 0.85em; background: var(--code-fond); padding: 0.1em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+
+/* Parties */
+section.partie { margin-top: 5.5rem; }
+
+/* Couverture */
+section.garde .sur-titre { margin: 0 0 0.7rem; color: var(--accent-texte); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; }
+section.garde h1 { font-size: clamp(2.05rem, 1.4rem + 2.8vw, 3rem); line-height: 1.08; letter-spacing: -0.028em;
+  border-bottom: none; padding: 0; margin: 0 0 0.7rem; scroll-margin-top: 5rem; }
+section.garde .accroche { font-size: 1.25rem; font-weight: 500; color: var(--fg-doux); margin: 0 0 1.6rem;
+  padding-bottom: 1.4rem; border-bottom: 3px solid var(--accent); max-width: none; }
+section.garde > p { margin-bottom: 0.3rem; }
+section.garde > p.note-version { font-size: 0.86rem; color: var(--discret); margin-top: 1rem; }
+.note-web { margin: 1.4rem 0 0; padding: 0.85rem 1.1rem; font-size: 0.9rem; color: var(--fg-doux);
+  background: var(--encart-fond); border-radius: 8px; max-width: 39rem; }
+.note-web strong { color: var(--fg); }
+.retrait { margin: 0 0 2.2rem; padding: 0.75rem 1.1rem; font-size: 0.92rem; color: var(--fg);
+  background: var(--encart-fond); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
+.retrait a { font-weight: 600; }
+
+/* Code */
+.code { margin: 1rem 0 1.5rem; background: var(--code-fond); border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0; min-width: 0; }
+.code-tete { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.4rem 0.5rem 0 1.1rem; }
+.code-langue { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--discret); }
+.copier { font: inherit; font-size: 0.78rem; font-weight: 500; line-height: 1.3; color: var(--fg-doux);
+  background: var(--bouton-fond); border: 1px solid var(--bouton-bord); border-radius: 6px;
+  padding: 0.22rem 0.65rem; cursor: pointer; white-space: nowrap; }
+.copier:hover, .copier:focus-visible { color: var(--fg); border-color: var(--accent); }
+.copier.fait { color: var(--fg); border-color: var(--accent); }
+.code pre { margin: 0; padding: 0.35rem 1.1rem 1rem; font-size: 0.84rem; line-height: 1.58;
+  overflow-x: auto; tab-size: 2; }
+.code pre code { background: none; padding: 0; border-radius: 0; font-size: inherit; overflow-wrap: normal; }
+.code pre:has(> code.language-text), .code pre:has(> code.language-markdown) { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Tableaux */
+.tableau { overflow-x: auto; margin: 1rem 0 1.6rem; }
+.livret table { width: 100%; border-collapse: collapse; font-size: 0.9rem; line-height: 1.5;
+  font-variant-numeric: tabular-nums; }
+.livret th { text-align: left; font-weight: 600; color: var(--titre); border-bottom: 2px solid var(--accent);
+  padding: 0.45rem 0.7rem; vertical-align: bottom; }
+.livret td { border-bottom: 1px solid var(--trait); padding: 0.5rem 0.7rem; vertical-align: top; }
+.livret td code { font-size: 0.82em; }
+@media (max-width: 700px) {
+  .tableau.c3 table { min-width: 32rem; }
+  .tableau.c4 table, .tableau.c5 table { min-width: 42rem; }
+}
+/* Cellules à remplir, dans le fichier Markdown du cahier : à l'écran, une ligne d'écriture. */
+td.ecrire { border-left: 1px solid var(--trait); min-width: 5rem; height: 2.6rem;
+  background-image: linear-gradient(var(--ligne), var(--ligne));
+  background-repeat: no-repeat; background-size: calc(100% - 1.4rem) 1px;
+  background-position: 0.7rem calc(100% - 0.55rem); }
+td.insecable { white-space: nowrap; }
+td.insecable code { overflow-wrap: normal; }
+table.fiche td:last-child { width: 60%; }
+table.deux-zones td { width: 50%; }
+td.coche { width: 3rem; text-align: center; vertical-align: middle; }
+
+/* Cases à cocher */
+.case { display: inline-block; width: 0.95rem; height: 0.95rem; border: 1.5px solid var(--discret);
+  border-radius: 3px; vertical-align: -0.12em; box-sizing: border-box; }
+.case.coche { background: var(--accent); border-color: var(--accent); }
+ul.taches { list-style: none; padding-left: 1.7rem; }
+li.tache { margin: 0.45rem 0; position: relative; }
+li.tache > .case { position: absolute; left: -1.7rem; top: 0.33rem; }
+
+/* Pied de page et retour au sommaire */
+.pied { margin-top: 4.5rem; padding-top: 1.2rem; border-top: 1px solid var(--trait); font-size: 0.82rem;
+  color: var(--discret); }
+.vers-sommaire { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  font-size: 0.82rem; font-weight: 600; color: var(--fg); background: var(--bouton-fond);
+  border: 1px solid var(--bouton-bord); border-radius: 999px; padding: 0.45rem 0.9rem;
+  text-decoration: none; box-shadow: 0 4px 14px var(--ombre); }
+@media (min-width: 1120px) { .vers-sommaire { display: none !important; } }
+
+.seule { font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px; line-height: 1.62; font-feature-settings: "cv05" 1, "cv08" 1;
+  max-width: 46rem; margin: 0 auto; padding: 2.5rem 16px 6rem; }
+</style>
+</head>
+<body>
+<div class="seule">
+<main class="livret">
+<section class="garde">
+<p class="sur-titre">Context Engineering, skills &amp; workflows · 5 Degrés · vendredi 16 octobre 2026</p>
+<h1>Démarrer le J2</h1>
+<p class="accroche">Votre projet ou Tailspin Toys, les skills de Matt Pocock, puis partager son écran</p>
+</section>
+<p class="retrait"><strong>En ligne jusqu'au vendredi 23 octobre 2026.</strong> Retour à <a href="index.html">la page du livret</a>.</p>
+<section class="garde">
+<p>Vous avez un projet sur lequel avancer aujourd'hui, un projet perso ou un projet client accessible depuis ce poste ? Restez dessus : passez directement à la partie 4, les skills. Sinon, installez Tailspin Toys, le projet d'entraînement de la journée : parties 1 à 4.</p>
+<h2 id="1-verifier-ce-qui-est-deja-la">1. Vérifier ce qui est déjà là</h2>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">git --version
+node --version
+</code></pre></div>
+<p>Il faut <strong>git</strong>, et <strong>Node 24</strong> (ou Node 22, à partir de 22.13). Évitez les versions impaires, 23 et 25 : Vitest ne les prend pas en charge. Ce qui répond n'est pas à réinstaller.</p>
+<h2 id="2-installer-ce-qui-manque">2. Installer ce qui manque</h2>
+<h3 id="windows-avec-les-droits-d-administrateur">Windows, avec les droits d'administrateur</h3>
+<p>Dans PowerShell :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">PowerShell</span><button type="button" class="copier">Copier</button></div><pre><code class="language-powershell">winget install --id Git.Git -e --source winget
+winget install --id OpenJS.NodeJS.LTS -e --source winget
+</code></pre></div>
+<p>Puis fermez et rouvrez le terminal.</p>
+<h3 id="windows-sans-droits-d-administrateur">Windows, sans droits d'administrateur</h3>
+<ul>
+<li><strong>Node</strong> : sur <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org</a>, téléchargez Node 24 LTS pour Windows au format <strong>.zip</strong>, et décompressez-le dans votre dossier personnel.</li>
+<li><strong>Git</strong> : sur <a href="https://git-scm.com/downloads/win" target="_blank" rel="noopener">git-scm.com</a>, prenez la version <strong>Portable</strong> (64 bits), une archive qui s'extrait d'elle-même, et extrayez-la dans votre dossier personnel.</li>
+</ul>
+<p>Puis, dans PowerShell, en remplaçant <code>24.X.Y</code> par la version téléchargée :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">PowerShell</span><button type="button" class="copier">Copier</button></div><pre><code class="language-powershell">$env:Path = &quot;$HOME\node-v24.X.Y-win-x64;$HOME\PortableGit\cmd;$env:Path&quot;
+</code></pre></div>
+<p>Ce réglage vaut pour ce terminal. Pour le garder : menu Démarrer, « Modifier les variables d'environnement pour votre compte », ligne <code>Path</code>, puis ajoutez ces deux dossiers.</p>
+<h3 id="linux">Linux</h3>
+<p>Git, s'il manque (sans <code>sudo</code>, il est en général déjà là) :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">sudo apt install git      # Debian, Ubuntu
+sudo dnf install git      # Fedora
+</code></pre></div>
+<p>Node 24, avec nvm, sans <code>sudo</code>. Le paquet <code>nodejs</code> des distributions est souvent trop ancien.</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
+</code></pre></div>
+<p>Fermez et rouvrez le terminal, puis :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">nvm install 24
+</code></pre></div>
+<h2 id="3-installer-tailspin-toys-si-vous-n-avez-pas-de-projet">3. Installer Tailspin Toys, si vous n'avez pas de projet</h2>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">git clone https://github.com/denneulin/tailspin-toys.git
+cd tailspin-toys
+npm ci
+npm run dev
+</code></pre></div>
+<p>Ouvrez l'URL affichée, en général <a href="http://localhost:4321" target="_blank" rel="noopener">http://localhost:4321</a> : le catalogue de 21 jeux s'affiche. <code>npm ci</code> télécharge environ 90 Mo : à neuf sur le même wifi, comptez quelques minutes. Les tests tournent en moins d'une seconde :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Bash</span><button type="button" class="copier">Copier</button></div><pre><code class="language-bash">npm run test:unit
+</code></pre></div>
+<p><strong>Si ça coince</strong></p>
+<ul>
+<li>PowerShell refuse de lancer <code>npm</code> (« l'exécution de scripts est désactivée sur ce système ») : tapez une fois <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>, ou passez par Git Bash.</li>
+<li><code>npm ci</code> échoue sur la version de Node : vérifiez <code>node --version</code> (24, ou 22 à partir de 22.13).</li>
+<li>Le port 4321 est pris : le serveur prend le suivant, 4322 ; l'URL affichée fait foi.</li>
+</ul>
+<h2 id="4-installer-les-skills-de-matt-pocock">4. Installer les skills de Matt Pocock</h2>
+<p>Lancez Claude Code dans votre projet, ou dans le dossier <code>tailspin-toys</code> (<code>claude</code>), acceptez le dialogue de confiance, puis :</p>
+<div class="code"><div class="code-tete"><span class="code-langue">Texte</span><button type="button" class="copier">Copier</button></div><pre><code class="language-text">/plugin marketplace add mattpocock/skills
+/plugin install mattpocock-skills@mattpocock
+</code></pre></div>
+<ul>
+<li>Une seule voie, celle-ci : n'installez pas aussi la version de la marketplace officielle, chaque skill serait en double. Quand la portée vous est demandée, l'installation pour vous suffit.</li>
+<li>Vérifiez avec <code>/plugin</code> : <code>mattpocock-skills</code> apparaît. Si <code>/grill-with-docs</code> n'est pas proposé quand vous tapez <code>/grill</code>, relancez Claude Code.</li>
+<li>Le setup de Pocock est déjà fait dans Tailspin. Sur votre projet perso ou client : <code>/setup-matt-pocock-skills</code>, sur une branche, en choisissant les fichiers Markdown locaux.</li>
+</ul>
+<h2 id="5-partager-son-ecran-a-la-restitution">5. Partager son écran, à la restitution</h2>
+<p>L'animateur dit laquelle des deux façons on utilise.</p>
+<h3 id="sur-la-tv-de-la-salle">Sur la TV de la salle</h3>
+<ul>
+<li><strong>Par câble HDMI</strong> : sous Windows, <code>Win+P</code>, puis « Dupliquer » ; sous Linux, Paramètres, Écrans, puis le mode miroir.</li>
+<li><strong>Sans fil</strong> : sous Windows, <code>Win+K</code>, puis choisissez la TV ; avec un Chromecast, dans Chrome, menu « Caster… », puis « Caster l'écran ».</li>
+</ul>
+<p>Ceux qui suivent à distance voient la TV par la caméra de l'animateur.</p>
+<h3 id="par-teams-dans-le-navigateur-sans-installer-l-appli">Par Teams, dans le navigateur, sans installer l'appli</h3>
+<ol>
+<li>Ouvrez le lien de la réunion, que l'animateur donne en salle, dans <strong>Chrome ou Edge</strong>, et choisissez de continuer dans ce navigateur.</li>
+<li><strong>En salle, coupez le micro et le son de l'ordinateur avant d'entrer</strong> : sinon, effet Larsen.</li>
+<li>Pour montrer votre travail : le bouton Partager, puis la fenêtre du navigateur où tourne le site, ou celle de votre terminal, plutôt que tout l'écran. Sous Linux, autorisez le partage d'écran quand le système le demande.</li>
+<li>Arrêtez le partage à la fin de votre passage.</li>
+</ol></section>
+<footer class="pied">Context Engineering, skills &amp; workflows · 5 Degrés · Animateur : Anthony Denneulin</footer>
+</main>
+</div>
+<script>
+(() => {
+  "use strict";
+  // Bouton Copier ; une condition /goal se copie sur une seule ligne.
+  const signaler = (bouton, message) => {
+    const initial = bouton.dataset.initial || bouton.textContent;
+    bouton.dataset.initial = initial;
+    bouton.textContent = message;
+    bouton.classList.add("fait");
+    clearTimeout(bouton._minuteur);
+    bouton._minuteur = setTimeout(() => { bouton.textContent = initial; bouton.classList.remove("fait"); }, 2200);
+  };
+  const selectionner = (pre, bouton) => {
+    const plage = document.createRange();
+    plage.selectNodeContents(pre);
+    const s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(plage);
+    signaler(bouton, "Sélectionné : Ctrl+C");
+  };
+  document.addEventListener("click", (e) => {
+    const bouton = e.target.closest("button.copier");
+    if (!bouton) return;
+    const pre = bouton.closest(".code").querySelector("pre");
+    let texte = pre.textContent.replace(/\s+$/, "");
+    if (bouton.hasAttribute("data-une-ligne")) {
+      texte = texte.split("\n").map((l) => l.trim()).filter(Boolean).join(" ");
+    }
+    try {
+      navigator.clipboard.writeText(texte).then(() => signaler(bouton, "Copié ✓"), () => selectionner(pre, bouton));
+    } catch {
+      selectionner(pre, bouton);
+    }
+  });
+})();
+</script>
+</body>
+</html>

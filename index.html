@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Livret · Context Engineering, skills &amp; workflows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+:root {
+  --bg: #fffaf3;
+  --fg: #26233a;
+  --fg-doux: #575279;
+  --discret: #6e6a8a;
+  --titre-fort: #b4637a;
+  --titre: #a8566f;
+  --sous-titre: #a8566f;
+  --accent: #ea9d34;
+  --accent-texte: #95590c;
+  --lien: #286983;
+  --code-fond: #f2e9e1;
+  --encart-fond: #f4ede8;
+  --trait: #e4dfdc;
+  --ligne: #cfc9c6;
+  --bouton-fond: #fffaf3;
+  --bouton-bord: #dcd3ca;
+  --ombre: rgba(38, 35, 58, 0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #232136; --fg: #e0def4; --fg-doux: #bcb8d8; --discret: #908caa;
+    --titre-fort: #ea9a97; --titre: #ea9a97; --sous-titre: #f6c177;
+    --accent: #f6c177; --accent-texte: #f6c177; --lien: #9ccfd8;
+    --code-fond: #2a273f; --encart-fond: #2a283e; --trait: #393552; --ligne: #44415a;
+    --bouton-fond: #232136; --bouton-bord: #44415a; --ombre: rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #232136; --fg: #e0def4; --fg-doux: #bcb8d8; --discret: #908caa;
+  --titre-fort: #ea9a97; --titre: #ea9a97; --sous-titre: #f6c177;
+  --accent: #f6c177; --accent-texte: #f6c177; --lien: #9ccfd8;
+  --code-fond: #2a273f; --encart-fond: #2a283e; --trait: #393552; --ligne: #44415a;
+  --bouton-fond: #232136; --bouton-bord: #44415a; --ombre: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: no-preference) { :root { scroll-behavior: smooth; } }
+
+body { margin: 0; background: var(--bg); color: var(--fg); }
+
+.accueil {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px; line-height: 1.6; font-feature-settings: "cv05" 1, "cv08" 1;
+  max-width: 40rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
+}
+.accueil .sur-titre { margin: 0 0 0.7rem; color: var(--accent-texte); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; }
+.accueil h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 2.8rem); font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.028em; color: var(--titre-fort); margin: 0 0 0.6rem; text-wrap: balance; }
+.accueil .accroche { font-size: 1.2rem; font-weight: 500; color: var(--fg-doux); margin: 0 0 1.8rem;
+  padding-bottom: 1.3rem; border-bottom: 3px solid var(--accent); }
+.retrait { margin: 0 0 2rem; padding: 0.75rem 1.1rem; font-size: 0.92rem;
+  background: var(--encart-fond); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; }
+.carte { margin: 0 0 1.4rem; padding: 1.3rem 1.4rem 0.6rem; border: 1px solid var(--trait); border-radius: 10px; }
+.carte h2 { margin: 0 0 0.45rem; font-size: 1.4rem; font-weight: 700; color: var(--titre); }
+.carte p { margin: 0 0 0.8rem; }
+.bouton { display: inline-block; padding: 0.65rem 1.15rem; border-radius: 8px; background: var(--accent);
+  color: #26233a; font-weight: 600; text-decoration: none; }
+.bouton:hover, .bouton:focus-visible { box-shadow: 0 4px 14px var(--ombre); }
+.consigne, .formats { font-size: 0.92rem; color: var(--fg-doux); }
+.accueil a:not(.bouton) { color: var(--lien); text-underline-offset: 0.18em; }
+.attente { font-weight: 600; color: var(--accent-texte); }
+.pied { margin-top: 3rem; font-size: 0.82rem; color: var(--discret); }
+</style>
+</head>
+<body>
+<main class="accueil">
+<p class="sur-titre">Livret participant · 5 Degrés · 15 et 16 octobre 2026</p>
+<h1>Context Engineering, skills &amp; workflows</h1>
+<p class="accroche">Du prompt improvisé au harness maîtrisé</p>
+<p class="retrait"><strong>En ligne jusqu'au vendredi 23 octobre 2026.</strong> Téléchargez vos fichiers d'ici là.</p>
+<section class="carte">
+<h2>Vendredi : démarrer le J2</h2>
+<p>Installer Tailspin Toys si vous n'avez pas de projet sous la main, les skills de Matt Pocock, puis partager son écran à la restitution.</p>
+<p><a class="bouton" href="demarrer-j2.html">Ouvrir la page</a></p>
+</section>
+<section class="carte">
+<h2>Le cahier</h2>
+<p>À remplir pendant la formation : les exercices, les ateliers, le plan d'adoption.</p>
+<p><a class="bouton" href="cahier.md" download="cahier-context-engineering.md">Télécharger le cahier (Markdown)</a></p>
+<p class="consigne">Enregistrez-le hors de votre repo (le dossier Téléchargements suffit) et remplissez-le dans votre éditeur.</p>
+<p class="formats">Aussi en <a href="cahier.html" download="cahier-context-engineering.html">HTML</a>, à lire, et en <a href="cahier.pdf" download="cahier-context-engineering.pdf">PDF</a>.</p>
+</section>
+<section class="carte" id="recap" data-fichier="recap.md">
+<h2>Le récap</h2>
+<p>À relire après la formation : ce qu'il faut retenir de chaque demi-journée, les lectures et les sources.</p>
+<p class="attente">Publié le vendredi 16 octobre 2026 à 16h30.</p>
+<p class="formats" hidden>Téléchargez le récap : <a href="recap.md" download="recap-context-engineering.md">Markdown</a>, <a href="recap.html" download="recap-context-engineering.html">HTML</a>, <a href="recap.pdf" download="recap-context-engineering.pdf">PDF</a>.</p>
+</section>
+<section class="carte" id="slides" data-fichier="j2-aprem.pdf">
+<h2>Les slides</h2>
+<p>Les quatre demi-journées, en PDF, sans les notes d'animation.</p>
+<p class="attente">Publiées le vendredi 16 octobre 2026 à 16h30.</p>
+<p class="formats" hidden>Téléchargez les slides : <a href="j1-matin.pdf" download="j1-matin-context-engineering.pdf">J1 matin</a>, <a href="j1-aprem.pdf" download="j1-aprem-context-engineering.pdf">J1 après-midi</a>, <a href="j2-matin.pdf" download="j2-matin-context-engineering.pdf">J2 matin</a>, <a href="j2-aprem.pdf" download="j2-aprem-context-engineering.pdf">J2 après-midi</a>.</p>
+</section>
+<footer class="pied">Context Engineering, skills &amp; workflows · 5 Degrés · Animateur : Anthony Denneulin</footer>
+</main>
+<script>
+(() => {
+  "use strict";
+  // Les liens du récap et des slides apparaissent dès que leur fichier témoin
+  // (data-fichier) est en ligne (PUBLICATION_RECAP).
+  for (const carte of document.querySelectorAll("[data-fichier]")) {
+    fetch(carte.dataset.fichier, { method: "HEAD", cache: "no-store" }).then((r) => {
+      if (!r.ok) return;
+      carte.querySelector(".attente").hidden = true;
+      carte.querySelector(".formats").hidden = false;
+    }).catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>
